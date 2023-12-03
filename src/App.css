@@ -1,38 +1,109 @@
-.App {
+body{
+  background-color: antiquewhite;
+}
+.App{
+  flex-direction: column;
+}
+.App-header{
   text-align: center;
+  background-color: bisque;
+  margin: 10px;
+  font-size: 24px;
+  color: indianred;
+  padding: 10px;
+  font-family: sans-serif;
+  font-weight: bold;
+  border-radius: 10px;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.laboCreate{
+  margin: 10px;
+  color: indianred;
+  width: 220px;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.labo-update{
+  width: 100%;
+  height: px;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.labForm{
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+.title-labo{
+  font-size: 15px;
+  color: indianred
+}
+.labo-label{
+  margin: 5px 0px;
+}
+.labo-input{
+  padding: 5px;
+  border: 1px solid burlywood;
+  border-radius: 5px;
+}
+.labo-button{
+  margin: 10px 0px;
+  border: 1px solid burlywood;
+  background-color: salmon;
   color: white;
+  border-radius: 5px;
+  font-size: 15px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  cursor: pointer;
 }
-
-.App-link {
-  color: #61dafb;
+.update-button{
+  background-color: rgb(238, 135, 60);
 }
+.laborant-list{
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  justify-content: left;
+}
+.labo-show{
+  padding: 10px;
+  border: 1px solid brown;
+  border-radius: 5px;
+  width: 200px;
+  height: 120px;
+  margin: 10px;
+  color: indianred;
+}
+.labo-edit{
+  padding: 10px;
+  border: 1px solid brown;
+  border-radius: 5px;
+  width: 200px;
+  height: 200px;
+  margin: 10px;
+  color: indianred;
+}
+.button-sil{
+  padding: 5px;
+  font-size: 15px;
+  width: 60px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgb(231, 67, 67);
+  color: white;
+  margin-right: 10px;
+}
+.button-guncelle{
+  padding: 5px;
+  font-size: 15px;
+  width: 80px;
+  border: none;
+  border-radius: 10px;
+  background-color: rgb(179, 67, 231);
+  color: white;
+  margin-right: 10px;
+}
+.title{
+  color: indianred;
+  margin-top: 5px;
+  margin-bottom: 6px;
+}
+.isim-show{
+  margin-bottom: 6px;
+  margin-top: 5px;
 }
