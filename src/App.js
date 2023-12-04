@@ -1,4 +1,5 @@
 import "./App.css";
+import MainFormController from "./Components/MainFormController";
 import SideBar from "./Components/SideBar";
 
 function App() {
@@ -9,8 +10,9 @@ function App() {
           <p>Raporlama Uygulaması</p>
         </div>
       </header>
-      <div>
+      <div className="main-div">
         <SideBar />
+        <MainFormController/>
       </div>
     </div>
   );

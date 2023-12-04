@@ -1,7 +1,6 @@
 import LaborantForm from "./LaborantForm";
 import { useState } from "react";
 import LaborantList from "./LaborantList";
-import RaporForm from "./RaporForm";
 
 function SideBar() {
   const [laborants, setLaborants] = useState([]);
@@ -35,23 +34,15 @@ function SideBar() {
     });
     setLaborants(updatedInputs);
   };
-  const createHasta = (dosyaNo,hastaIsim,hastaKimlik,hastaTani,TaniDetay,selectedDate,selectedFile) => {
-    console.log(dosyaNo,hastaIsim,hastaKimlik,hastaTani,TaniDetay,selectedDate,selectedFile)
-  };
 
   return (
-    <div className="form-div">
-      <div>
-        <LaborantForm onCreate={createLaborant} />
-        <LaborantList
-          laborants={laborants}
-          onDelete={deleteLaborantById}
-          onUpdate={editInputById}
-        />
-      </div>
-      <div>
-        <RaporForm onCreateHasta={createHasta}/>
-      </div>
+    <div>
+      <LaborantForm onCreate={createLaborant} />
+      <LaborantList
+        laborants={laborants}
+        onDelete={deleteLaborantById}
+        onUpdate={editInputById}
+      />
     </div>
   );
 }

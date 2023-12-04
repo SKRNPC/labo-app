@@ -15,18 +15,24 @@ body{
   font-weight: bold;
   border-radius: 10px;
 }
-.form-div{
+.main-div{
   display: flex;
-  justify-content: left;
+}
+.rapor-div{
+  display: flex;
+  flex-direction: row;
 }
 .laboCreate{
-  margin: 10px;
+  margin: 20px;
   color: indianred;
   width: 220px;
 }
-.labo-update{
+.rapor-update{
   width: 100%;
-  height: px;
+}
+.labo-update{
+  margin: 0px;
+  width: 100%;
 }
 .labForm{
   display: flex;
@@ -65,27 +71,42 @@ body{
 .update-button{
   background-color: rgb(238, 135, 60);
   cursor: pointer;
-}
-.laborant-list{
 
+}
+.laborant-list{ 
+  width: 220px;
   justify-content: left;
+}
+.rapor-list{
+  margin-left: 50px;
+  margin-right: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex-direction: row;
+  align-content: flex-start;
 }
 .labo-show{
   padding: 10px;
   border: 1px solid brown;
   border-radius: 5px;
-  width: 200px;
-  height: 120px;
-  margin: 10px;
+  margin: 20px;
   color: indianred;
+}
+.hasta-show{
+  padding: 10px;
+  border: 1px solid brown;
+  border-radius: 5px;
+  margin: 10px; 
+  color: indianred;
+
 }
 .labo-edit{
   padding: 10px;
   border: 1px solid brown;
   border-radius: 5px;
-  width: 200px;
-  height: 200px;
-  margin: 10px;
+  margin: 20px;
   color: indianred;
 }
 .button-sil{
@@ -107,7 +128,6 @@ body{
   border-radius: 10px;
   background-color: rgb(179, 67, 231);
   color: white;
-  margin-right: 10px;
   cursor: pointer;
 }
 .title{
@@ -116,6 +136,6 @@ body{
   margin-bottom: 6px;
 }
 .isim-show{
-  margin-bottom: 6px;
   margin-top: 5px;
+  margin-bottom: 6px;
 }
