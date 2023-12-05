@@ -5,7 +5,8 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 
 function RaporForm({ input, raporFormUpdate, onUpdate }) {
-  const { createRapor } = useContext(FormsContext);
+  const { laborants,createRapor  } = useContext(FormsContext);
+
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
   const [hastaIsim, setHastaIsim] = useState(input ? input.hastaIsim : "");
   const [hastaKimlik, setHastaKimlik] = useState(
@@ -19,6 +20,13 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const [selectedFile, setSelectedFile] = useState(
     input ? input.selectedFile : ""
   );
+  const [selectedLaborant, setSelectedLaborant] = useState(
+    input ? input.selectedLaborant : ""
+  );
+
+  const handleLaborantChange = (event) => {
+    setSelectedLaborant(event.target.value);
+  };
 
   const handleChange = (event) => {
     setDosyaNo(event.target.value);
@@ -47,6 +55,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     if (raporFormUpdate) {
       onUpdate(
         input.id,
+        selectedLaborant,
         dosyaNo,
         hastaIsim,
         hastaKimlik,
@@ -66,6 +75,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
       //   selectedFile
       // );
       createRapor(
+        selectedLaborant,
         dosyaNo,
         hastaIsim,
         hastaKimlik,
@@ -75,7 +85,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         selectedFile
       );
     }
-
+    setSelectedLaborant("");
     setDosyaNo("");
     setHastaIsim("");
     setHastaKimlik("");
@@ -91,6 +101,21 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         <div className="rapor-update">
           <h1 className="title-labo">Raporu Güncelle</h1>
           <form className="labForm">
+            <label className="labo-label">Laborant Seç:</label>
+            <select
+              value={selectedLaborant}
+              onChange={handleLaborantChange}
+              className="labo-input"
+            >
+              <option value="" disabled>
+                Laborant Seçiniz
+              </option>
+              {laborants.map((laborant) => (
+                <option key={laborant.id} value={laborant.isim}>
+                  {laborant.isim}
+                </option>
+              ))}
+            </select>
             <label className="labo-label">Dosya Numarası</label>
             <input
               value={dosyaNo}
@@ -164,6 +189,21 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         <div className="laboCreate">
           <h1 className="title-labo">RAPOR EKLE</h1>
           <form className="labForm">
+            <label className="labo-label">Laborant Seç:</label>
+            <select
+              value={selectedLaborant}
+              onChange={handleLaborantChange}
+              className="labo-input"
+            >
+              <option value="" disabled>
+                Laborant Seçiniz
+              </option>
+              {laborants.map((laborant) => (
+                <option key={laborant.id} value={laborant.isim}>
+                  {laborant.isim}
+                </option>
+              ))}
+            </select>
             <label className="labo-label">Dosya Numarası</label>
             <input
               value={dosyaNo}

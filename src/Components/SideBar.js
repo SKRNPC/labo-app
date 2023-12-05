@@ -1,16 +1,24 @@
 import LaborantForm from "./LaborantForm";
 import LaborantList from "./LaborantList";
-
-
+import SearchBar from "./SearchBar";
+import RaporForm from "./RaporForm";
 
 function SideBar() {
-
-  
-
   return (
     <div>
-      <LaborantForm/>
-      <LaborantList />
+      <div>
+        <SearchBar />
+      </div>
+
+      <div className="sidebar-div">
+        <div>
+          <LaborantForm />
+          <LaborantList />
+        </div>
+        <div>
+          <RaporForm />
+        </div>
+      </div>
     </div>
   );
 }

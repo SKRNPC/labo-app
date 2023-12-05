@@ -3,7 +3,7 @@ import RaporForm from "./RaporForm";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
 
-function RaporShow({ input}) {
+function RaporShow({ input }) {
   const { deleteRaporById, editRaporById } = useContext(FormsContext);
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
@@ -15,6 +15,7 @@ function RaporShow({ input}) {
   };
   const handleSubmit = (
     id,
+    updatedSelectedLaborant,
     updatedDosyaNo,
     updatedHastaIsim,
     updatedHastaKimlik,
@@ -36,6 +37,7 @@ function RaporShow({ input}) {
     // );
     editRaporById(
       id,
+      updatedSelectedLaborant,
       updatedDosyaNo,
       updatedHastaIsim,
       updatedHastaKimlik,
@@ -57,7 +59,12 @@ function RaporShow({ input}) {
       ) : (
         <div>
           <h3 className="isim-show">{input.hastaIsim}</h3>
-          <p className="isim-show">{input.hastaTani}</p>
+          <p className="isim-show">
+            <strong>Laborant:</strong> {input.selectedLaborant}
+          </p>
+          <p className="isim-show">
+            <strong>Tanı:</strong> {input.hastaTani}
+          </p>
           <div>
             <button className="button-sil" onClick={handleDeleteClick}>
               Sil

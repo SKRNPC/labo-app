@@ -1,15 +1,13 @@
 import RaporForm from "./RaporForm";
 import RaporList from "./RaporList";
 
-function MainFormController() {
-  
 
+function MainFormController() {
   return (
     <div className="rapor-div">
-      <RaporForm />
-      <RaporList
-        
-      />
+      {/* <RaporForm />
+      */}
+      <RaporList />
     </div>
   );
 }

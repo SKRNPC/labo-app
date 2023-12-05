@@ -18,12 +18,16 @@ body{
 .main-div{
   display: flex;
 }
+.sidebar-div{
+  display: flex;
+}
 .rapor-div{
   display: flex;
   flex-direction: row;
 }
 .laboCreate{
   margin: 20px;
+  margin-top: 5px;
   color: indianred;
   width: 220px;
 }
@@ -138,4 +142,16 @@ body{
 .isim-show{
   margin-top: 5px;
   margin-bottom: 6px;
+}
+.search-input{
+  padding: 5px;
+  border: 1px solid burlywood;
+  border-radius: 5px;
+  margin-left: 20px;
+  margin-right: 10px;
+  width: 415px;
+}
+.search-button{
+  margin-bottom: 2px;
+  margin-top: 2px;
 }

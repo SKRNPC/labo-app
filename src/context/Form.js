@@ -37,11 +37,12 @@ function Provider({ children }) {
   };
   const [raporlar, setRaporlar] = useState([]);
   const createRapor = (
+    selectedLaborant,
     dosyaNo,
     hastaIsim,
     hastaKimlik,
     hastaTani,
-    TaniDetay,
+    taniDetay,
     selectedDate,
     selectedFile
   ) => {
@@ -49,11 +50,12 @@ function Provider({ children }) {
       ...raporlar,
       {
         id: Math.round(Math.random() * 999999),
+        selectedLaborant,
         dosyaNo,
         hastaIsim,
         hastaKimlik,
         hastaTani,
-        TaniDetay,
+        taniDetay,
         selectedDate,
         selectedFile,
       },
@@ -68,6 +70,7 @@ function Provider({ children }) {
   };
   const editRaporById = (
     id,
+    updatedSelectedLaborant,
     updatedDosyaNo,
     updatedHastaIsim,
     updatedHastaKimlik,
@@ -80,6 +83,7 @@ function Provider({ children }) {
       if (input.id === id) {
         return {
           id,
+          selectedLaborant: updatedSelectedLaborant,
           dosyaNo: updatedDosyaNo,
           hastaIsim: updatedHastaIsim,
           hastaKimlik: updatedHastaKimlik,
@@ -101,11 +105,14 @@ function Provider({ children }) {
     raporlar,
     createRapor,
     deleteRaporById,
-    editRaporById
-
+    editRaporById,
   };
 
-  return <FormsContext.Provider value={sharedValueAndMethods}>{children}</FormsContext.Provider>;
+  return (
+    <FormsContext.Provider value={sharedValueAndMethods}>
+      {children}
+    </FormsContext.Provider>
+  );
 }
 
 export { Provider };
