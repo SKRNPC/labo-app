@@ -1,5 +1,12 @@
 import { useState } from "react";
-function LaborantForm({ onCreate, input, laborantFormUpdate, onUpdate }) {
+import { useContext } from "react";
+import FormsContext from "../context/Form";
+
+
+function LaborantForm({input, laborantFormUpdate, onUpdate }) {
+
+  const { createLaborant } = useContext(FormsContext);
+
   const [isim, setIsim] = useState(input ? input.isim : "");
   const [labKimlik, setLabKimlik] = useState(input ? input.labKimlik : "");
 
@@ -14,8 +21,10 @@ function LaborantForm({ onCreate, input, laborantFormUpdate, onUpdate }) {
     event.preventDefault();
     if (laborantFormUpdate) {
       onUpdate(input.id, isim, labKimlik);
+      // editInputById(input.id, isim, labKimlik)
     } else {
-      onCreate(isim, labKimlik);
+      // onCreate(isim, labKimlik);
+      createLaborant(isim,labKimlik)
     }
     setIsim("");
     setLabKimlik("");

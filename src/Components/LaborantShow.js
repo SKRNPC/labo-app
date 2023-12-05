@@ -1,19 +1,24 @@
 import { useState } from "react";
 import LaborantForm from "./LaborantForm";
+import { useContext } from "react";
+import FormsContext from "../context/Form";
 
-function LaborantShow({ input, onDelete, onUpdate }) {
+function LaborantShow({ input }) {
+  const { deleteLaborantById, editInputById } = useContext(FormsContext);
+
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
-    onDelete(input.id);
+    // onDelete(input.id);
+    deleteLaborantById(input.id)
   };
   const handleEditClick = () => {
     setShowEdit(!showEdit);
   };
   const handleSubmit = (id, updatedIsim, updatedKimlik) => {
     setShowEdit(false);
-    onUpdate(id, updatedIsim, updatedKimlik);
+    editInputById(id, updatedIsim, updatedKimlik)
+    // onUpdate(id, updatedIsim, updatedKimlik);
   };
-  console.log(input);
 
   return (
     <div>
@@ -26,9 +31,7 @@ function LaborantShow({ input, onDelete, onUpdate }) {
       ) : (
         <div className="labo-show">
           <div>
-            <h3 className="title">Laborant Bilgileri</h3>
-            <p className="isim-show">{input.isim}</p>
-            <p className="isim-show">{input.labKimlik}</p>
+            <h3 className="isim-show">{input.isim}</h3>
             <div>
               <button className="button-sil" onClick={handleDeleteClick}>
                 Sil

@@ -1,10 +1,14 @@
 import { useState } from "react";
 import RaporForm from "./RaporForm";
+import { useContext } from "react";
+import FormsContext from "../context/Form";
 
-function RaporShow({ input, onDelete, onUpdate }) {
+function RaporShow({ input}) {
+  const { deleteRaporById, editRaporById } = useContext(FormsContext);
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
-    onDelete(input.id);
+    // onDelete(input.id);
+    deleteRaporById(input.id);
   };
   const handleEditClick = () => {
     setShowEdit(!showEdit);
@@ -20,7 +24,17 @@ function RaporShow({ input, onDelete, onUpdate }) {
     updatedSelectedFile
   ) => {
     setShowEdit(false);
-    onUpdate(
+    // onUpdate(
+    //   id,
+    //   updatedDosyaNo,
+    //   updatedHastaIsim,
+    //   updatedHastaKimlik,
+    //   updatedHastaTani,
+    //   updatedTaniDetay,
+    //   updatedSelectedDate,
+    //   updatedSelectedFile
+    // );
+    editRaporById(
       id,
       updatedDosyaNo,
       updatedHastaIsim,

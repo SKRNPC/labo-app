@@ -1,8 +1,11 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useContext } from "react";
+import FormsContext from "../context/Form";
 
-function RaporForm({ onCreateRapor, input, raporFormUpdate, onUpdate }) {
+function RaporForm({ input, raporFormUpdate, onUpdate }) {
+  const { createRapor } = useContext(FormsContext);
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
   const [hastaIsim, setHastaIsim] = useState(input ? input.hastaIsim : "");
   const [hastaKimlik, setHastaKimlik] = useState(
@@ -53,7 +56,16 @@ function RaporForm({ onCreateRapor, input, raporFormUpdate, onUpdate }) {
         selectedFile
       );
     } else {
-      onCreateRapor(
+      // onCreateRapor(
+      //   dosyaNo,
+      //   hastaIsim,
+      //   hastaKimlik,
+      //   hastaTani,
+      //   taniDetay,
+      //   selectedDate,
+      //   selectedFile
+      // );
+      createRapor(
         dosyaNo,
         hastaIsim,
         hastaKimlik,

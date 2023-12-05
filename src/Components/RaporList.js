@@ -1,6 +1,10 @@
 import RaporShow from "./RaporShow";
+import { useContext } from "react";
+import FormsContext from "../context/Form";
 
-function RaporList({ raporlar, onDelete, onUpdate }) {
+function RaporList() {
+
+  const { raporlar } = useContext(FormsContext);
   return (
     <div className="rapor-list">
       {raporlar.map((input, index) => {
@@ -8,8 +12,6 @@ function RaporList({ raporlar, onDelete, onUpdate }) {
           <RaporShow
             key={index}
             input={input}
-            onDelete={onDelete}
-            onUpdate={onUpdate}
           />
         );
       })}
