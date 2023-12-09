@@ -1,20 +1,49 @@
 import { createContext } from "react";
 import { useState } from "react";
+import LaborantEkle from "../Components/LaborantEkleApi.js";
 
 const FormsContext = createContext();
 
 function Provider({ children }) {
   const [laborants, setLaborants] = useState([]);
-  const createLaborant = (isim, labKimlik) => {
-    const createdLaborants = [
-      ...laborants,
-      {
-        id: Math.round(Math.random() * 999999),
+  const [apiProgress, setApiProgress] = useState(false);
+  const [succesMessage, setSuccesMessage] = useState();
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState();
+  const createLaborant = async (isim, labKimlik) => {
+    setSuccesMessage();
+    setGeneralError();
+    setApiProgress(true);
+  
+    try {
+      const response = await LaborantEkle({
         isim,
         labKimlik,
-      },
-    ];
-    setLaborants(createdLaborants);
+      });
+      setSuccesMessage(response.data.message);
+  
+      // Sadece backend doğrulaması başarılıysa yeni laborantı listeye ekle
+      const createdLaborants = [
+        ...laborants,
+        {
+          id: response.data.id, // Backend'den dönen ID'yi kullanın
+          isim,
+          labKimlik,
+        },
+      ];
+      setLaborants(createdLaborants);
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrors(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
+      }
+    } finally {
+      setApiProgress(false);
+    }
   };
   const deleteLaborantById = (id) => {
     const afterDeletingInputs = laborants.filter((input) => {
@@ -99,6 +128,7 @@ function Provider({ children }) {
   };
   const sharedValueAndMethods = {
     laborants,
+    setLaborants,
     createLaborant,
     deleteLaborantById,
     editInputById,
@@ -106,6 +136,14 @@ function Provider({ children }) {
     createRapor,
     deleteRaporById,
     editRaporById,
+    succesMessage,
+    setSuccesMessage,
+    apiProgress,
+    setApiProgress,
+    generalError,
+    setGeneralError,
+    errors,
+    setErrors
   };
 
   return (

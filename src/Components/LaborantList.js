@@ -1,9 +1,19 @@
 import LaborantShow from "./LaborantShow";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import FormsContext from "../context/Form";
+import loadLaborants from "./LaborantListApi"
 
 function LaborantList() {
-  const { laborants } = useContext(FormsContext);
+  const { laborants, setLaborants} = useContext(FormsContext);
+  // const [users, setUsers] = useState([])
+
+  useEffect(()=>{
+    async function getLaborants(){
+      const response = await loadLaborants();
+      setLaborants(response.data);
+    }
+    getLaborants();
+  },[setLaborants]);
   
   return (
     <div className="laborant-list">

@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
-import LaborantEkle from "./Api";
+import LaborantEkle from "./LaborantEkleApi";
 import Input from "./Input";
 
 function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
-  // const { createLaborant } = useContext(FormsContext);
+  const {
+    createLaborant,
+    setErrors,
+    errors,
+    succesMessage,
+    generalError,
+    apiProgress,
+  } = useContext(FormsContext);
 
   const [isim, setIsim] = useState(input ? input.isim : "");
   const [labKimlik, setLabKimlik] = useState(input ? input.labKimlik : "");
-  const [apiProgress, setApiProgress] = useState(false);
-  const [succesMessage, setSuccesMessage] = useState();
-  const [errors, setErrors] = useState({});
-  const [generalError, setGeneralError] = useState();
 
   useEffect(() => {
     setErrors(function (lastErrors) {
@@ -26,7 +29,7 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
   }, [labKimlik]);
 
   const handleChange = (event) => {
-    setIsim(event.target.value)
+    setIsim(event.target.value);
   };
   const handleKimlikChange = (event) => {
     setLabKimlik(event.target.value);
@@ -34,42 +37,42 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setSuccesMessage();
-    setGeneralError();
-    setApiProgress(true);
+    //  setSuccesMessage();
+    //  setGeneralError();
+    // setApiProgress(true);
 
-    try {
-      const response = await LaborantEkle({
-        isim,
-        labKimlik,
-      });
-      setSuccesMessage(response.data.message);
-    } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
-      } else {
-        setGeneralError("Unexpected error occured. Please Try Again!");
-      }
-    } finally {
-      setApiProgress(false);
-    }
+    // try {
+    //   const response = await LaborantEkle({
+    //     isim,
+    //     labKimlik,
+    //   });
+    //   setSuccesMessage(response.data.message);
+    // } catch (axiosError) {
+    //   if (
+    //     axiosError.response?.data &&
+    //     axiosError.response.data.status === 400
+    //   ) {
+    //     setErrors(axiosError.response.data.validationErrors);
+    //   } else {
+    //     setGeneralError("Unexpected error occured. Please Try Again!");
+    //   }
+    // } finally {
+    //   setApiProgress(false);
+    // }
     // .then((response) => {
     //   setSuccesMessage(response.data.message);
     // })
     // .finally(() => setApiProgress(false));
 
-    // if (laborantFormUpdate) {
-    //   onUpdate(input.id, isim, labKimlik);
-    //   // editInputById(input.id, isim, labKimlik)
-    // } else {
-    //   // onCreate(isim, labKimlik);
-    //   createLaborant(isim, labKimlik);
-    // }
-    // setIsim("");
-    // setLabKimlik("");
+    if (laborantFormUpdate) {
+      onUpdate(input.id, isim, labKimlik);
+      // editInputById(input.id, isim, labKimlik)
+    } else {
+      // onCreate(isim, labKimlik);
+      createLaborant(isim, labKimlik);
+    }
+    setIsim("");
+    setLabKimlik("");
   };
   return (
     <div>
