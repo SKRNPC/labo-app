@@ -6,7 +6,7 @@ body{
 }
 .App-header{
   text-align: center;
-  background-color: bisque;
+  background-color:bisque;
   margin: 10px;
   font-size: 24px;
   color: indianred;
@@ -71,6 +71,7 @@ body{
   padding-left: 10px;
   padding-right: 10px;
   cursor: pointer;
+  display: flex;
 }
 .update-button{
   background-color: rgb(238, 135, 60);
@@ -153,5 +154,36 @@ body{
 }
 .search-button{
   margin-bottom: 2px;
+  width: 45px;
   margin-top: 2px;
+  border-radius: 5px;
+  background-color: salmon;
+}
+.spinner {
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 6px;
+  height: 6px;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.alert {
+  padding: 10px;
+  background-color: bisque;
+  color: indianred;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.hata-mesaj{
+    font-size: x-small;
+    margin-top: 5px;
+    color: brown;
 }

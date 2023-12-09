@@ -17,7 +17,7 @@ function SearchBar({ onSearch }) {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
-      <button className="labo-button search-button" onClick={handleSearch}>Ara</button>
+      <button className="button-guncelle search-button" onClick={handleSearch}>Ara</button>
     </div>
   );
 }

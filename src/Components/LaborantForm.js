@@ -1,33 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
+import LaborantEkle from "./Api";
+import Input from "./Input";
 
-
-function LaborantForm({input, laborantFormUpdate, onUpdate }) {
-
-  const { createLaborant } = useContext(FormsContext);
+function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
+  // const { createLaborant } = useContext(FormsContext);
 
   const [isim, setIsim] = useState(input ? input.isim : "");
   const [labKimlik, setLabKimlik] = useState(input ? input.labKimlik : "");
+  const [apiProgress, setApiProgress] = useState(false);
+  const [succesMessage, setSuccesMessage] = useState();
+  const [errors, setErrors] = useState({});
+  const [generalError, setGeneralError] = useState();
+
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return { ...lastErrors, isim: undefined };
+    });
+  }, [isim]);
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return { ...lastErrors, labKimlik: undefined };
+    });
+  }, [labKimlik]);
 
   const handleChange = (event) => {
-    setIsim(event.target.value);
+    setIsim(event.target.value)
   };
   const handleKimlikChange = (event) => {
     setLabKimlik(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (laborantFormUpdate) {
-      onUpdate(input.id, isim, labKimlik);
-      // editInputById(input.id, isim, labKimlik)
-    } else {
-      // onCreate(isim, labKimlik);
-      createLaborant(isim,labKimlik)
+    setSuccesMessage();
+    setGeneralError();
+    setApiProgress(true);
+
+    try {
+      const response = await LaborantEkle({
+        isim,
+        labKimlik,
+      });
+      setSuccesMessage(response.data.message);
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrors(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralError("Unexpected error occured. Please Try Again!");
+      }
+    } finally {
+      setApiProgress(false);
     }
-    setIsim("");
-    setLabKimlik("");
+    // .then((response) => {
+    //   setSuccesMessage(response.data.message);
+    // })
+    // .finally(() => setApiProgress(false));
+
+    // if (laborantFormUpdate) {
+    //   onUpdate(input.id, isim, labKimlik);
+    //   // editInputById(input.id, isim, labKimlik)
+    // } else {
+    //   // onCreate(isim, labKimlik);
+    //   createLaborant(isim, labKimlik);
+    // }
+    // setIsim("");
+    // setLabKimlik("");
   };
   return (
     <div>
@@ -66,22 +108,37 @@ function LaborantForm({input, laborantFormUpdate, onUpdate }) {
         <div className="laboCreate">
           <h1 className="title-labo">LABORANT EKLE</h1>
           <form className="labForm">
-            <label className="labo-label">Ad Soyad</label>
-            <input
-              value={isim}
+            <Input
+              ad={isim}
+              label="Ad Soyad"
+              error={errors.isim}
               onChange={handleChange}
-              type="text"
-              className="labo-input"
+              turu="text"
             />
-            <label className="labo-label">Hastane Kimlik No</label>
-            <input
-              value={labKimlik}
+            <Input
+              ad={labKimlik}
+              label="Hastane Kimlik No"
+              error={errors.labKimlik}
               onChange={handleKimlikChange}
-              type="number"
-              className="labo-input"
+              turu="number"
             />
             <footer>
-              <button onClick={handleSubmit} className="labo-button">
+              {succesMessage && (
+                <div className="alert">
+                  <strong>{succesMessage}</strong>
+                </div>
+              )}
+              {generalError && (
+                <div className="alert">
+                  <strong>{generalError}</strong>
+                </div>
+              )}
+              <button
+                disabled={apiProgress}
+                onClick={handleSubmit}
+                className="labo-button"
+              >
+                {apiProgress && <span className="spinner"></span>}
                 Kaydet
               </button>
             </footer>
