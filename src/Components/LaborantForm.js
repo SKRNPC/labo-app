@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
-import LaborantEkle from "./LaborantEkleApi";
 import Input from "./Input";
 
 function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
@@ -21,12 +20,12 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
     setErrors(function (lastErrors) {
       return { ...lastErrors, isim: undefined };
     });
-  }, [isim]);
+  }, [isim, setErrors]);
   useEffect(() => {
     setErrors(function (lastErrors) {
       return { ...lastErrors, labKimlik: undefined };
     });
-  }, [labKimlik]);
+  }, [labKimlik,setErrors]);
 
   const handleChange = (event) => {
     setIsim(event.target.value);

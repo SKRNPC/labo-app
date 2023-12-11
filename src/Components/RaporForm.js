@@ -110,7 +110,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-              {laborants.map((laborant) => (
+              {laborants.content.map((laborant) => (
                 <option key={laborant.id} value={laborant.isim}>
                   {laborant.isim}
                 </option>
@@ -198,7 +198,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-              {laborants.map((laborant) => (
+              {laborants.content.map((laborant) => (
                 <option key={laborant.id} value={laborant.isim}>
                   {laborant.isim}
                 </option>

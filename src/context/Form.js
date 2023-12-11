@@ -5,54 +5,72 @@ import LaborantEkle from "../Components/LaborantEkleApi.js";
 const FormsContext = createContext();
 
 function Provider({ children }) {
-  const [laborants, setLaborants] = useState([]);
+
+  const [laborants, setLaborants] = useState({
+    content:[],
+    last:"false",
+    first:"false",
+    number:0
+  })
+  
   const [apiProgress, setApiProgress] = useState(false);
-  const [succesMessage, setSuccesMessage] = useState();
-  const [errors, setErrors] = useState({});
-  const [generalError, setGeneralError] = useState();
-  const createLaborant = async (isim, labKimlik) => {
-    setSuccesMessage();
-    setGeneralError();
-    setApiProgress(true);
-  
-    try {
-      const response = await LaborantEkle({
-        isim,
-        labKimlik,
-      });
-      setSuccesMessage(response.data.message);
-  
-      // Sadece backend doğrulaması başarılıysa yeni laborantı listeye ekle
-      const createdLaborants = [
-        ...laborants,
-        {
-          id: response.data.id, // Backend'den dönen ID'yi kullanın
-          isim,
-          labKimlik,
-        },
-      ];
-      setLaborants(createdLaborants);
-    } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
-      } else {
-        setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
-      }
-    } finally {
-      setApiProgress(false);
+const [succesMessage, setSuccesMessage] = useState();
+const [errors, setErrors] = useState({});
+const [generalError, setGeneralError] = useState();
+
+const createLaborant = async (isim, labKimlik) => {
+  setSuccesMessage();
+  setGeneralError();
+  setApiProgress(true);
+
+  try {
+    const response = await LaborantEkle({
+      isim,
+      labKimlik,
+    });
+    setSuccesMessage(response.data.message);
+
+    // Sadece backend doğrulaması başarılıysa yeni laborantı listeye ekle
+    const createdLaborant = {
+      id: response.data.id, // Backend'den dönen ID'yi kullanın
+      isim,
+      labKimlik,
+    };
+
+    setLaborants((prevLaborants) => {
+      return {
+        ...prevLaborants,
+        content: [...prevLaborants.content, createdLaborant],
+      };
+    });
+  } catch (axiosError) {
+    if (axiosError.response?.data && axiosError.response.data.status === 400) {
+      setErrors(axiosError.response.data.validationErrors);
+    } else {
+      setGeneralError(
+        "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!"
+      );
     }
-  };
-  const deleteLaborantById = (id) => {
-    const afterDeletingInputs = laborants.filter((input) => {
+  } finally {
+    setApiProgress(false);
+  }
+};
+
+const deleteLaborantById = (id) => {
+  setLaborants((prevLaborants) => {
+    const afterDeletingInputs = prevLaborants.content.filter((input) => {
       return input.id !== id;
     });
-    setLaborants(afterDeletingInputs);
-  };
-  const editInputById = (id, updatedIsim, updatedKimlik) => {
-    const updatedInputs = laborants.map((input) => {
+
+    return {
+      ...prevLaborants,
+      content: afterDeletingInputs,
+    };
+  });
+};
+const editInputById = (id, updatedIsim, updatedKimlik) => {
+  setLaborants((prevLaborants) => {
+    const updatedInputs = prevLaborants.content.map((input) => {
       if (input.id === id) {
         return {
           id,
@@ -62,8 +80,13 @@ function Provider({ children }) {
       }
       return input;
     });
-    setLaborants(updatedInputs);
-  };
+
+    return {
+      ...prevLaborants,
+      content: updatedInputs,
+    };
+  });
+};
   const [raporlar, setRaporlar] = useState([]);
   const createRapor = (
     selectedLaborant,
@@ -143,7 +166,7 @@ function Provider({ children }) {
     generalError,
     setGeneralError,
     errors,
-    setErrors
+    setErrors,
   };
 
   return (
