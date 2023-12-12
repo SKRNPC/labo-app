@@ -199,9 +199,9 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
                 Laborant Seçiniz
               </option>
               {laborants.content.map((laborant) => (
-                <option key={laborant.id} value={laborant.isim}>
-                  {laborant.isim}
-                </option>
+    <option key={laborant.id} value={laborant.isim}>
+      {laborant.isim}
+    </option>
               ))}
             </select>
             <label className="labo-label">Dosya Numarası</label>

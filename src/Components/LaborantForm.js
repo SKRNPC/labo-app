@@ -25,7 +25,7 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
     setErrors(function (lastErrors) {
       return { ...lastErrors, labKimlik: undefined };
     });
-  }, [labKimlik,setErrors]);
+  }, [labKimlik, setErrors]);
 
   const handleChange = (event) => {
     setIsim(event.target.value);
@@ -36,38 +36,10 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    //  setSuccesMessage();
-    //  setGeneralError();
-    // setApiProgress(true);
-
-    // try {
-    //   const response = await LaborantEkle({
-    //     isim,
-    //     labKimlik,
-    //   });
-    //   setSuccesMessage(response.data.message);
-    // } catch (axiosError) {
-    //   if (
-    //     axiosError.response?.data &&
-    //     axiosError.response.data.status === 400
-    //   ) {
-    //     setErrors(axiosError.response.data.validationErrors);
-    //   } else {
-    //     setGeneralError("Unexpected error occured. Please Try Again!");
-    //   }
-    // } finally {
-    //   setApiProgress(false);
-    // }
-    // .then((response) => {
-    //   setSuccesMessage(response.data.message);
-    // })
-    // .finally(() => setApiProgress(false));
 
     if (laborantFormUpdate) {
       onUpdate(input.id, isim, labKimlik);
-      // editInputById(input.id, isim, labKimlik)
     } else {
-      // onCreate(isim, labKimlik);
       createLaborant(isim, labKimlik);
     }
     setIsim("");
@@ -81,21 +53,26 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
           <div className="labo-update">
             <h1 className="title-labo">Bilgileri Güncelle</h1>
             <form className="labForm">
-              <label className="labo-label">Ad Soyad</label>
-              <input
-                value={isim}
+              <Input
+                ad={isim}
+                label="Ad Soyad"
+                error={errors.isim}
                 onChange={handleChange}
-                type="text"
-                className="labo-input"
+                turu="text"
               />
-              <label className="labo-label">Hastane Kimlik No</label>
-              <input
-                value={labKimlik}
+              <Input
+                ad={labKimlik}
+                label="Hastane Kimlik No"
+                error={errors.labKimlik}
                 onChange={handleKimlikChange}
-                type="number"
-                className="labo-input"
+                turu="number"
               />
               <footer>
+              {generalError && (
+                <div className="alert">
+                  <strong>{generalError}</strong>
+                </div>
+              )}
                 <button
                   onClick={handleSubmit}
                   className="labo-button update-button"
