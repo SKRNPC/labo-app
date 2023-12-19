@@ -5,7 +5,7 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 
 function RaporForm({ input, raporFormUpdate, onUpdate }) {
-  const { laborants,createRapor  } = useContext(FormsContext);
+  const { laborants, createRapor } = useContext(FormsContext);
 
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
   const [hastaIsim, setHastaIsim] = useState(input ? input.hastaIsim : "");
@@ -110,11 +110,11 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-              {laborants.content.map((laborant) => (
+              {/* {laborants.content.map((laborant) => (
                 <option key={laborant.id} value={laborant.isim}>
                   {laborant.isim}
                 </option>
-              ))}
+              ))} */}
             </select>
             <label className="labo-label">Dosya Numarası</label>
             <input
@@ -198,11 +198,11 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-              {laborants.content.map((laborant) => (
-    <option key={laborant.id} value={laborant.isim}>
-      {laborant.isim}
-    </option>
-              ))}
+              {/* {laborants.content.map((laborant) => (
+                <option key={laborant.id} value={laborant.isim}>
+                  {laborant.isim}
+                </option>
+              ))} */}
             </select>
             <label className="labo-label">Dosya Numarası</label>
             <input

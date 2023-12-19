@@ -38,6 +38,8 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
     event.preventDefault();
 
     if (laborantFormUpdate) {
+      console.log("input.id", input.id);
+
       onUpdate(input.id, isim, labKimlik);
     } else {
       createLaborant(isim, labKimlik);
@@ -68,11 +70,11 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
                 turu="number"
               />
               <footer>
-              {generalError && (
-                <div className="alert">
-                  <strong>{generalError}</strong>
-                </div>
-              )}
+                {generalError && (
+                  <div className="alert">
+                    <strong>{generalError}</strong>
+                  </div>
+                )}
                 <button
                   onClick={handleSubmit}
                   className="labo-button update-button"

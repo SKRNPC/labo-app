@@ -2,6 +2,7 @@ import { createContext } from "react";
 import { useState } from "react";
 import LaborantEkle from "../Components/LaborantEkleApi.js";
 import LaborantGuncelle from "../Components/LaborantGuncelleApi.js";
+import LaborantSil from "../Components/LaborantSilApi.js";
 
 const FormsContext = createContext();
 
@@ -57,18 +58,32 @@ function Provider({ children }) {
     }
   };
 
-  const deleteLaborantById = (id) => {
-    setLaborants((prevLaborants) => {
-      const afterDeletingInputs = prevLaborants.content.filter((input) => {
-        return input.id !== id;
+  const deleteLaborantById = async (id) => {
+    setApiProgress(true);
+    try {
+      // Make the API call to delete the laborant on the backend
+      await LaborantSil(id);
+
+      // If the backend delete is successful, update the local state
+      setLaborants((prevLaborants) => {
+        const afterDeletingInputs = prevLaborants.content.filter(
+          (input) => input.id !== id
+        );
+
+        return {
+          ...prevLaborants,
+          content: afterDeletingInputs,
+        };
       });
 
-      return {
-        ...prevLaborants,
-        content: afterDeletingInputs,
-      };
-    });
+      setSuccesMessage("Laborant silme başarılı");
+    } catch (axiosError) {
+      setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
+    } finally {
+      setApiProgress(false);
+    }
   };
+
   const editInputById = async (id, updatedIsim, updatedKimlik) => {
     setApiProgress(true);
     setErrors({});
