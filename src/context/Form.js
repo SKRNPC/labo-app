@@ -16,8 +16,10 @@ function Provider({ children }) {
 
   const [apiProgress, setApiProgress] = useState(false);
   const [succesMessage, setSuccesMessage] = useState();
+  const [succesMessageRapor, setSuccesMessageRapor] = useState();
   const [errors, setErrors] = useState({});
   const [generalError, setGeneralError] = useState();
+  const [apiProgressRapor, setApiProgressRapor] = useState(false);
 
   const createLaborant = async (isim, labKimlik) => {
     setSuccesMessage();
@@ -198,6 +200,7 @@ function Provider({ children }) {
     deleteLaborantById,
     editInputById,
     raporlar,
+    setRaporlar,
     createRapor,
     deleteRaporById,
     editRaporById,
@@ -209,6 +212,10 @@ function Provider({ children }) {
     setGeneralError,
     errors,
     setErrors,
+    apiProgressRapor,
+    setApiProgressRapor,
+    succesMessageRapor,
+    setSuccesMessageRapor,
   };
 
   return (

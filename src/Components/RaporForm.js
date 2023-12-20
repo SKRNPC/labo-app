@@ -1,11 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
+import RaporEkle from "./RaporEkleApi";
+import Input from "./Input";
 
 function RaporForm({ input, raporFormUpdate, onUpdate }) {
-  const { laborants, createRapor } = useContext(FormsContext);
+  const {
+    laborants,
+    setSuccesMessageRapor,
+    succesMessageRapor,
+    createRapor,
+    apiProgressRapor,
+    setApiProgressRapor,
+  } = useContext(FormsContext);
 
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
   const [hastaIsim, setHastaIsim] = useState(input ? input.hastaIsim : "");
@@ -23,10 +32,16 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const [selectedLaborant, setSelectedLaborant] = useState(
     input ? input.selectedLaborant : ""
   );
-
+  const [errors, setErrors] = useState({});
+  const [generalErrors, setGeneralErrors] = useState();
   const handleLaborantChange = (event) => {
     setSelectedLaborant(event.target.value);
   };
+  useEffect(() => {
+    setErrors(function (lastErrors) {
+      return { ...lastErrors, hastaIsim: undefined };
+    });
+  }, [hastaIsim]);
 
   const handleChange = (event) => {
     setDosyaNo(event.target.value);
@@ -50,8 +65,38 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     const file = event.target.files[0];
     setSelectedFile(file);
   };
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setSuccesMessageRapor();
+    setGeneralErrors();
+    setApiProgressRapor(true);
+
+    try {
+      const response = await RaporEkle({
+        dosyaNo,
+        hastaIsim,
+        hastaKimlik,
+        hastaTani,
+        taniDetay,
+        selectedDate,
+        selectedFile,
+      });
+      setSuccesMessageRapor(response.data.message);
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrors(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralErrors(
+          "Beklenmedik bir hata oluştu. Lütfen tekrar deneyiniz."
+        );
+      }
+    } finally {
+      setApiProgressRapor(false);
+    }
+
     if (raporFormUpdate) {
       onUpdate(
         input.id,
@@ -116,33 +161,33 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
                 </option>
               ))} */}
             </select>
-            <label className="labo-label">Dosya Numarası</label>
-            <input
-              value={dosyaNo}
+            <Input
+              ad={dosyaNo}
+              label="Dosya Numarası"
+              error={errors.dosyaNo}
               onChange={handleChange}
-              type="number"
-              className="labo-input"
+              turu="number"
             />
-            <label className="labo-label">Ad Soyad</label>
-            <input
-              value={hastaIsim}
+            <Input
+              ad={hastaIsim}
+              label="Ad Soyad"
+              error={errors.hastaIsim}
               onChange={handleIsimChange}
-              type="text"
-              className="labo-input"
+              turu="text"
             />
-            <label className="labo-label">Hasta Kimlik No</label>
-            <input
-              value={hastaKimlik}
+            <Input
+              ad={hastaKimlik}
+              label="Hasta Kimlik No"
+              error={errors.hastaKimlik}
               onChange={handleHastaKimlikChange}
-              type="number"
-              className="labo-input"
+              turu="number"
             />
-            <label className="labo-label">Koyulan Tanı Başlığı</label>
-            <input
-              value={hastaTani}
+            <Input
+              ad={hastaTani}
+              label="Koyulan Tanı Başlığı"
+              error={errors.hastaTani}
               onChange={handleTaniChange}
-              type="text"
-              className="labo-input"
+              turu="text"
             />
             <label className="labo-label">Tanı Detayları</label>
             <textarea
@@ -204,33 +249,33 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
                 </option>
               ))} */}
             </select>
-            <label className="labo-label">Dosya Numarası</label>
-            <input
-              value={dosyaNo}
+            <Input
+              ad={dosyaNo}
+              label="Dosya Numarası"
+              error={errors.dosyaNo}
               onChange={handleChange}
-              type="number"
-              className="labo-input"
+              turu="number"
             />
-            <label className="labo-label">Ad Soyad</label>
-            <input
-              value={hastaIsim}
+            <Input
+              ad={hastaIsim}
+              label="Ad Soyad"
+              error={errors.hastaIsim}
               onChange={handleIsimChange}
-              type="text"
-              className="labo-input"
+              turu="text"
             />
-            <label className="labo-label">Hasta Kimlik No</label>
-            <input
-              value={hastaKimlik}
+            <Input
+              ad={hastaKimlik}
+              label="Hasta Kimlik No"
+              error={errors.hastaKimlik}
               onChange={handleHastaKimlikChange}
-              type="number"
-              className="labo-input"
+              turu="number"
             />
-            <label className="labo-label">Koyulan Tanı Başlığı</label>
-            <input
-              value={hastaTani}
+            <Input
+              ad={hastaTani}
+              label="Koyulan Tanı Başlığı"
+              error={errors.hastaTani}
               onChange={handleTaniChange}
-              type="text"
-              className="labo-input"
+              turu="text"
             />
             <label className="labo-label">Tanı Detayları</label>
             <textarea
@@ -264,7 +309,22 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               </div>
             )}
             <footer>
-              <button className="labo-button" onClick={handleSubmit}>
+              {succesMessageRapor && (
+                <div className="alert">
+                  <strong>{succesMessageRapor}</strong>
+                </div>
+              )}{" "}
+              {generalErrors && (
+                <div className="alert">
+                  <strong>{generalErrors}</strong>
+                </div>
+              )}
+              <button
+                disabled={apiProgressRapor}
+                className="labo-button"
+                onClick={handleSubmit}
+              >
+                {apiProgressRapor && <span className="spinner"></span>}
                 Kaydet
               </button>
             </footer>
