@@ -1,5 +1,6 @@
 function Input(props) {
     const {ad, label, error, onChange, turu}=props
+   
   return (
     <>
       <label className="labo-label">{label}</label>

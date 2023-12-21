@@ -3,6 +3,7 @@ import { useState } from "react";
 import LaborantEkle from "../Components/LaborantEkleApi.js";
 import LaborantGuncelle from "../Components/LaborantGuncelleApi.js";
 import LaborantSil from "../Components/LaborantSilApi.js";
+import RaporEkle from "../Components/RaporEkleApi.js";
 
 const FormsContext = createContext();
 
@@ -18,7 +19,9 @@ function Provider({ children }) {
   const [succesMessage, setSuccesMessage] = useState();
   const [succesMessageRapor, setSuccesMessageRapor] = useState();
   const [errors, setErrors] = useState({});
+  const [errorsRapor, setErrorsRapor] = useState({});
   const [generalError, setGeneralError] = useState();
+  const [generalErrorRapor, setGeneralErrorRapor] = useState();
   const [apiProgressRapor, setApiProgressRapor] = useState(false);
 
   const createLaborant = async (isim, labKimlik) => {
@@ -131,8 +134,13 @@ function Provider({ children }) {
       setApiProgress(false);
     }
   };
-  const [raporlar, setRaporlar] = useState([]);
-  const createRapor = (
+  const [raporlar, setRaporlar] = useState({
+    content: [],
+    last: false,
+    first: false,
+    number: 0,
+  });
+  const createRapor = async (
     selectedLaborant,
     dosyaNo,
     hastaIsim,
@@ -142,10 +150,12 @@ function Provider({ children }) {
     selectedDate,
     selectedFile
   ) => {
-    const createdRaporlar = [
-      ...raporlar,
-      {
-        id: Math.round(Math.random() * 999999),
+    setSuccesMessageRapor();
+    setGeneralErrorRapor();
+    setApiProgressRapor(true);
+
+    try {
+      const response = await RaporEkle({
         selectedLaborant,
         dosyaNo,
         hastaIsim,
@@ -154,45 +164,77 @@ function Provider({ children }) {
         taniDetay,
         selectedDate,
         selectedFile,
-      },
-    ];
-    setRaporlar(createdRaporlar);
-  };
-  const deleteRaporById = (id) => {
-    const afterDeletingInputs = raporlar.filter((input) => {
-      return input.id !== id;
-    });
-    setRaporlar(afterDeletingInputs);
-  };
-  const editRaporById = (
-    id,
-    updatedSelectedLaborant,
-    updatedDosyaNo,
-    updatedHastaIsim,
-    updatedHastaKimlik,
-    updatedHastaTani,
-    updatedTaniDetay,
-    updatedSelectedDate,
-    updatedSelectedFile
-  ) => {
-    const updatedInputs = raporlar.map((input) => {
-      if (input.id === id) {
+      });
+      setSuccesMessageRapor(response.data.message);
+      // Sadece backend doğrulaması başarılıysa yeni laborantı listeye ekle
+      const createdRaporlar = {
+        id: response.data.id, // Backend'den dönen ID'yi kullanın
+        selectedLaborant,
+        dosyaNo,
+        hastaIsim,
+        hastaKimlik,
+        hastaTani,
+        taniDetay,
+        selectedDate,
+        selectedFile,
+      };
+      setRaporlar((prevRaporlar) => {
         return {
-          id,
-          selectedLaborant: updatedSelectedLaborant,
-          dosyaNo: updatedDosyaNo,
-          hastaIsim: updatedHastaIsim,
-          hastaKimlik: updatedHastaKimlik,
-          hastaTani: updatedHastaTani,
-          taniDetay: updatedTaniDetay,
-          selectedDate: updatedSelectedDate,
-          selectedFile: updatedSelectedFile,
+          ...prevRaporlar,
+          content: [...prevRaporlar.content, createdRaporlar],
         };
+      });
+    } catch (axiosError) {
+      if (
+        
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrorsRapor(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralErrorRapor(
+          "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!"
+        );
       }
-      return input;
-    });
-    setRaporlar(updatedInputs);
+    } finally {
+      setApiProgressRapor(false);
+    }
   };
+  // const deleteRaporById = (id) => {
+  //   const afterDeletingInputs = raporlar.filter((input) => {
+  //     return input.id !== id;
+  //   });
+  //   setRaporlar(afterDeletingInputs);
+  // };
+  // const editRaporById = (
+  //   id,
+  //   updatedSelectedLaborant,
+  //   updatedDosyaNo,
+  //   updatedHastaIsim,
+  //   updatedHastaKimlik,
+  //   updatedHastaTani,
+  //   updatedTaniDetay,
+  //   updatedSelectedDate,
+  //   updatedSelectedFile
+  // ) => {
+  //   const updatedInputs = raporlar.map((input) => {
+  //     if (input.id === id) {
+  //       return {
+  //         id,
+  //         selectedLaborant: updatedSelectedLaborant,
+  //         dosyaNo: updatedDosyaNo,
+  //         hastaIsim: updatedHastaIsim,
+  //         hastaKimlik: updatedHastaKimlik,
+  //         hastaTani: updatedHastaTani,
+  //         taniDetay: updatedTaniDetay,
+  //         selectedDate: updatedSelectedDate,
+  //         selectedFile: updatedSelectedFile,
+  //       };
+  //     }
+  //     return input;
+  //   });
+  //   setRaporlar(updatedInputs);
+  // };
   const sharedValueAndMethods = {
     laborants,
     setLaborants,
@@ -202,15 +244,18 @@ function Provider({ children }) {
     raporlar,
     setRaporlar,
     createRapor,
-    deleteRaporById,
-    editRaporById,
+    // deleteRaporById,
+    // editRaporById,
     succesMessage,
     setSuccesMessage,
     apiProgress,
     setApiProgress,
     generalError,
     setGeneralError,
+    generalErrorRapor,
     errors,
+    errorsRapor,
+    setErrorsRapor,
     setErrors,
     apiProgressRapor,
     setApiProgressRapor,

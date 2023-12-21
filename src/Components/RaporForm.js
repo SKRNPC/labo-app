@@ -3,17 +3,17 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
-import RaporEkle from "./RaporEkleApi";
 import Input from "./Input";
 
 function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const {
     laborants,
-    setSuccesMessageRapor,
     succesMessageRapor,
     createRapor,
     apiProgressRapor,
-    setApiProgressRapor,
+    generalErrorRapor,
+    errorsRapor,
+    setErrorsRapor
   } = useContext(FormsContext);
 
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
@@ -32,16 +32,14 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const [selectedLaborant, setSelectedLaborant] = useState(
     input ? input.selectedLaborant : ""
   );
-  const [errors, setErrors] = useState({});
-  const [generalErrors, setGeneralErrors] = useState();
   const handleLaborantChange = (event) => {
     setSelectedLaborant(event.target.value);
   };
   useEffect(() => {
-    setErrors(function (lastErrors) {
+    setErrorsRapor(function (lastErrors) {
       return { ...lastErrors, hastaIsim: undefined };
     });
-  }, [hastaIsim]);
+  }, [hastaIsim,setErrorsRapor]);
 
   const handleChange = (event) => {
     setDosyaNo(event.target.value);
@@ -62,41 +60,18 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     setSelectedDate(date);
   };
   const handleFileChange = (event) => {
+    if(event.target.files.length<1)return;
     const file = event.target.files[0];
-    setSelectedFile(file);
+    const fileReader=new FileReader();
+    fileReader.onloadend=()=>{
+      const data=fileReader.result
+      setSelectedFile(data);
+    }
+    fileReader.readAsDataURL(file)
+    
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setSuccesMessageRapor();
-    setGeneralErrors();
-    setApiProgressRapor(true);
-
-    try {
-      const response = await RaporEkle({
-        dosyaNo,
-        hastaIsim,
-        hastaKimlik,
-        hastaTani,
-        taniDetay,
-        selectedDate,
-        selectedFile,
-      });
-      setSuccesMessageRapor(response.data.message);
-    } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
-      } else {
-        setGeneralErrors(
-          "Beklenmedik bir hata oluştu. Lütfen tekrar deneyiniz."
-        );
-      }
-    } finally {
-      setApiProgressRapor(false);
-    }
-
     if (raporFormUpdate) {
       onUpdate(
         input.id,
@@ -110,15 +85,6 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         selectedFile
       );
     } else {
-      // onCreateRapor(
-      //   dosyaNo,
-      //   hastaIsim,
-      //   hastaKimlik,
-      //   hastaTani,
-      //   taniDetay,
-      //   selectedDate,
-      //   selectedFile
-      // );
       createRapor(
         selectedLaborant,
         dosyaNo,
@@ -155,37 +121,37 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-              {/* {laborants.content.map((laborant) => (
+               {laborants.content.map((laborant) => (
                 <option key={laborant.id} value={laborant.isim}>
                   {laborant.isim}
                 </option>
-              ))} */}
+              ))} 
             </select>
             <Input
               ad={dosyaNo}
               label="Dosya Numarası"
-              error={errors.dosyaNo}
+              error={errorsRapor.dosyaNo}
               onChange={handleChange}
               turu="number"
             />
             <Input
               ad={hastaIsim}
               label="Ad Soyad"
-              error={errors.hastaIsim}
+              error={errorsRapor.hastaIsim}
               onChange={handleIsimChange}
               turu="text"
             />
             <Input
               ad={hastaKimlik}
               label="Hasta Kimlik No"
-              error={errors.hastaKimlik}
+              error={errorsRapor.hastaKimlik}
               onChange={handleHastaKimlikChange}
               turu="number"
             />
             <Input
               ad={hastaTani}
               label="Koyulan Tanı Başlığı"
-              error={errors.hastaTani}
+              error={errorsRapor.hastaTani}
               onChange={handleTaniChange}
               turu="text"
             />
@@ -214,9 +180,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
             {selectedFile && (
               <div>
                 <img
-                  src={URL.createObjectURL(selectedFile)}
-                  alt="Selected File"
-                  className="input-file"
+                   src={selectedFile}
+                   alt="Selected File"
+                   className="input-file"
+                   style={{ maxWidth: '100%', maxHeight: '100%' }}
                 />
               </div>
             )}
@@ -234,7 +201,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         <div className="laboCreate">
           <h1 className="title-labo">RAPOR EKLE</h1>
           <form className="labForm">
-            <label className="labo-label">Laborant Seç:</label>
+             <label className="labo-label">Laborant Seç:</label>
             <select
               value={selectedLaborant}
               onChange={handleLaborantChange}
@@ -243,37 +210,38 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-              {/* {laborants.content.map((laborant) => (
+              {laborants.content.map((laborant) => (
                 <option key={laborant.id} value={laborant.isim}>
                   {laborant.isim}
                 </option>
-              ))} */}
-            </select>
+              ))}
+            </select> 
+            <div className="hata-mesaj">{errorsRapor.selectedLaborant}</div>
             <Input
               ad={dosyaNo}
               label="Dosya Numarası"
-              error={errors.dosyaNo}
+              error={errorsRapor.dosyaNo}
               onChange={handleChange}
               turu="number"
             />
             <Input
               ad={hastaIsim}
               label="Ad Soyad"
-              error={errors.hastaIsim}
+              error={errorsRapor.hastaIsim}
               onChange={handleIsimChange}
               turu="text"
             />
             <Input
               ad={hastaKimlik}
               label="Hasta Kimlik No"
-              error={errors.hastaKimlik}
+              error={errorsRapor.hastaKimlik}
               onChange={handleHastaKimlikChange}
               turu="number"
             />
             <Input
               ad={hastaTani}
               label="Koyulan Tanı Başlığı"
-              error={errors.hastaTani}
+              error={errorsRapor.hastaTani}
               onChange={handleTaniChange}
               turu="text"
             />
@@ -302,9 +270,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
             {selectedFile && (
               <div>
                 <img
-                  src={URL.createObjectURL(selectedFile)}
+                  src={selectedFile}
                   alt="Selected File"
                   className="input-file"
+                  style={{ maxWidth: '100%', maxHeight: '100%' }}
                 />
               </div>
             )}
@@ -314,9 +283,9 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
                   <strong>{succesMessageRapor}</strong>
                 </div>
               )}{" "}
-              {generalErrors && (
+              {generalErrorRapor && (
                 <div className="alert">
-                  <strong>{generalErrors}</strong>
+                  <strong>{generalErrorRapor}</strong>
                 </div>
               )}
               <button
