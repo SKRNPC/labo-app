@@ -4,6 +4,7 @@ import LaborantEkle from "../Components/LaborantEkleApi.js";
 import LaborantGuncelle from "../Components/LaborantGuncelleApi.js";
 import LaborantSil from "../Components/LaborantSilApi.js";
 import RaporEkle from "../Components/RaporEkleApi.js";
+import RaporGuncelle from "../Components/RaporGuncelleApi.js";
 
 const FormsContext = createContext();
 
@@ -186,7 +187,6 @@ function Provider({ children }) {
       });
     } catch (axiosError) {
       if (
-        
         axiosError.response?.data &&
         axiosError.response.data.status === 400
       ) {
@@ -206,35 +206,68 @@ function Provider({ children }) {
   //   });
   //   setRaporlar(afterDeletingInputs);
   // };
-  // const editRaporById = (
-  //   id,
-  //   updatedSelectedLaborant,
-  //   updatedDosyaNo,
-  //   updatedHastaIsim,
-  //   updatedHastaKimlik,
-  //   updatedHastaTani,
-  //   updatedTaniDetay,
-  //   updatedSelectedDate,
-  //   updatedSelectedFile
-  // ) => {
-  //   const updatedInputs = raporlar.map((input) => {
-  //     if (input.id === id) {
-  //       return {
-  //         id,
-  //         selectedLaborant: updatedSelectedLaborant,
-  //         dosyaNo: updatedDosyaNo,
-  //         hastaIsim: updatedHastaIsim,
-  //         hastaKimlik: updatedHastaKimlik,
-  //         hastaTani: updatedHastaTani,
-  //         taniDetay: updatedTaniDetay,
-  //         selectedDate: updatedSelectedDate,
-  //         selectedFile: updatedSelectedFile,
-  //       };
-  //     }
-  //     return input;
-  //   });
-  //   setRaporlar(updatedInputs);
-  // };
+  const editRaporById = async (
+    id,
+    updatedSelectedLaborant,
+    updatedDosyaNo,
+    updatedHastaIsim,
+    updatedHastaKimlik,
+    updatedHastaTani,
+    updatedTaniDetay,
+    updatedSelectedDate,
+    updatedSelectedFile
+  ) => {
+    setSuccesMessageRapor();
+    setGeneralErrorRapor();
+    setApiProgressRapor(true);
+    try {
+      await RaporGuncelle(id, {
+        selectedLaborant: updatedSelectedLaborant,
+        dosyaNo: updatedDosyaNo,
+        hastaIsim: updatedHastaIsim,
+        hastaKimlik: updatedHastaKimlik,
+        hastaTani: updatedHastaTani,
+        taniDetay: updatedTaniDetay,
+        selectedDate: updatedSelectedDate,
+        selectedFile: updatedSelectedFile,
+      });
+      // If the backend update is successful, update the local state
+      setRaporlar((prevRaporlar) => {
+        const updatedInputs = prevRaporlar.content.map((input) => {
+          if (input.id === id) {
+            return {
+              id,
+              selectedLaborant: updatedSelectedLaborant,
+              dosyaNo: updatedDosyaNo,
+              hastaIsim: updatedHastaIsim,
+              hastaKimlik: updatedHastaKimlik,
+              hastaTani: updatedHastaTani,
+              taniDetay: updatedTaniDetay,
+              selectedDate: updatedSelectedDate,
+              selectedFile: updatedSelectedFile,
+            };
+          }
+          return input;
+        });
+        return {
+          ...prevRaporlar,
+          content: updatedInputs,
+        };
+      });
+      setSuccesMessageRapor("Rapor güncelleme başarılı");
+    } catch (axiosError) {
+      if (
+        axiosError.response?.data &&
+        axiosError.response.data.status === 400
+      ) {
+        setErrorsRapor(axiosError.response.data.validationErrors);
+      } else {
+        setGeneralErrorRapor("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
+      }
+    } finally {
+      setApiProgressRapor(false);
+    }
+  };
   const sharedValueAndMethods = {
     laborants,
     setLaborants,
@@ -245,7 +278,7 @@ function Provider({ children }) {
     setRaporlar,
     createRapor,
     // deleteRaporById,
-    // editRaporById,
+    editRaporById,
     succesMessage,
     setSuccesMessage,
     apiProgress,

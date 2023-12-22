@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
 import Input from "./Input";
+import { parseISO } from 'date-fns'; 
 
 function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const {
@@ -13,7 +14,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     apiProgressRapor,
     generalErrorRapor,
     errorsRapor,
-    setErrorsRapor
+    setErrorsRapor,
   } = useContext(FormsContext);
 
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
@@ -39,7 +40,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     setErrorsRapor(function (lastErrors) {
       return { ...lastErrors, hastaIsim: undefined };
     });
-  }, [hastaIsim,setErrorsRapor]);
+  }, [hastaIsim, setErrorsRapor]);
 
   const handleChange = (event) => {
     setDosyaNo(event.target.value);
@@ -60,15 +61,14 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     setSelectedDate(date);
   };
   const handleFileChange = (event) => {
-    if(event.target.files.length<1)return;
+    if (event.target.files.length < 1) return;
     const file = event.target.files[0];
-    const fileReader=new FileReader();
-    fileReader.onloadend=()=>{
-      const data=fileReader.result
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      const data = fileReader.result;
       setSelectedFile(data);
-    }
-    fileReader.readAsDataURL(file)
-    
+    };
+    fileReader.readAsDataURL(file);
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -121,11 +121,11 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               <option value="" disabled>
                 Laborant Seçiniz
               </option>
-               {laborants.content.map((laborant) => (
+              {laborants.content.map((laborant) => (
                 <option key={laborant.id} value={laborant.isim}>
                   {laborant.isim}
                 </option>
-              ))} 
+              ))}
             </select>
             <Input
               ad={dosyaNo}
@@ -180,10 +180,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
             {selectedFile && (
               <div>
                 <img
-                   src={selectedFile}
-                   alt="Selected File"
-                   className="input-file"
-                   style={{ maxWidth: '100%', maxHeight: '100%' }}
+                  src={selectedFile}
+                  alt="Selected File"
+                  className="input-file"
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
                 />
               </div>
             )}
@@ -201,7 +201,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         <div className="laboCreate">
           <h1 className="title-labo">RAPOR EKLE</h1>
           <form className="labForm">
-             <label className="labo-label">Laborant Seç:</label>
+            <label className="labo-label">Laborant Seç:</label>
             <select
               value={selectedLaborant}
               onChange={handleLaborantChange}
@@ -215,7 +215,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
                   {laborant.isim}
                 </option>
               ))}
-            </select> 
+            </select>
             <div className="hata-mesaj">{errorsRapor.selectedLaborant}</div>
             <Input
               ad={dosyaNo}
@@ -273,7 +273,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
                   src={selectedFile}
                   alt="Selected File"
                   className="input-file"
-                  style={{ maxWidth: '100%', maxHeight: '100%' }}
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
                 />
               </div>
             )}

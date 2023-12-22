@@ -25,16 +25,6 @@ function RaporShow({ input }) {
     updatedSelectedFile
   ) => {
     setShowEdit(false);
-    // onUpdate(
-    //   id,
-    //   updatedDosyaNo,
-    //   updatedHastaIsim,
-    //   updatedHastaKimlik,
-    //   updatedHastaTani,
-    //   updatedTaniDetay,
-    //   updatedSelectedDate,
-    //   updatedSelectedFile
-    // );
     editRaporById(
       id,
       updatedSelectedLaborant,
