@@ -228,7 +228,7 @@ function Provider({ children }) {
         hastaKimlik: updatedHastaKimlik,
         hastaTani: updatedHastaTani,
         taniDetay: updatedTaniDetay,
-        selectedDate: updatedSelectedDate,
+        selectedDate: updatedSelectedDate.toISOString(),
         selectedFile: updatedSelectedFile,
       });
       // If the backend update is successful, update the local state
@@ -243,7 +243,7 @@ function Provider({ children }) {
               hastaKimlik: updatedHastaKimlik,
               hastaTani: updatedHastaTani,
               taniDetay: updatedTaniDetay,
-              selectedDate: updatedSelectedDate,
+              selectedDate: updatedSelectedDate.toISOString(),
               selectedFile: updatedSelectedFile,
             };
           }

@@ -25,7 +25,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const [hastaTani, setHastaTani] = useState(input ? input.hastaTani : "");
   const [taniDetay, setTaniDetay] = useState(input ? input.taniDetay : "");
   const [selectedDate, setSelectedDate] = useState(
-    input ? input.selectedDate : ""
+    input ? new Date(input.selectedDate) : null
   );
   const [selectedFile, setSelectedFile] = useState(
     input ? input.selectedFile : ""
@@ -166,7 +166,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
             <label className="labo-label">Rapor Tarihi</label>
             <DatePicker
               selected={selectedDate}
-              onChange={handleDateChange}
+              onChange={(date) => setSelectedDate(date)}
               dateFormat="dd/MM/yyyy"
               className="labo-input"
             />
