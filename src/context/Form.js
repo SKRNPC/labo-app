@@ -5,7 +5,7 @@ import LaborantGuncelle from "../Components/LaborantGuncelleApi.js";
 import LaborantSil from "../Components/LaborantSilApi.js";
 import RaporEkle from "../Components/RaporEkleApi.js";
 import RaporGuncelle from "../Components/RaporGuncelleApi.js";
-
+import RaporSil from "../Components/RaporSilApi.js";
 const FormsContext = createContext();
 
 function Provider({ children }) {
@@ -21,6 +21,7 @@ function Provider({ children }) {
   const [succesMessageRapor, setSuccesMessageRapor] = useState();
   const [errors, setErrors] = useState({});
   const [errorsRapor, setErrorsRapor] = useState({});
+  const [errorsRaporUpdate, setErrorsRaporUpdate] = useState({});
   const [generalError, setGeneralError] = useState();
   const [generalErrorRapor, setGeneralErrorRapor] = useState();
   const [apiProgressRapor, setApiProgressRapor] = useState(false);
@@ -200,12 +201,33 @@ function Provider({ children }) {
       setApiProgressRapor(false);
     }
   };
-  // const deleteRaporById = (id) => {
-  //   const afterDeletingInputs = raporlar.filter((input) => {
-  //     return input.id !== id;
-  //   });
-  //   setRaporlar(afterDeletingInputs);
-  // };
+  const deleteRaporById = async (id) => {
+    setApiProgressRapor(true);
+    try {
+      // Make the API call to delete the laborant on the backend
+      await RaporSil(id);
+
+      // If the backend delete is successful, update the local state
+      setRaporlar((prevRaporlar) => {
+        const afterDeletingInputs = prevRaporlar.content.filter(
+          (input) => input.id !== id
+        );
+
+        return {
+          ...prevRaporlar,
+          content: afterDeletingInputs,
+        };
+      });
+
+      setSuccesMessageRapor("Rapor silme başarılı");
+    } catch (axiosError) {
+      setGeneralErrorRapor(
+        "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!"
+      );
+    } finally {
+      setApiProgressRapor(false);
+    }
+  };
   const editRaporById = async (
     id,
     updatedSelectedLaborant,
@@ -260,9 +282,11 @@ function Provider({ children }) {
         axiosError.response?.data &&
         axiosError.response.data.status === 400
       ) {
-        setErrorsRapor(axiosError.response.data.validationErrors);
+        setErrorsRaporUpdate(axiosError.response.data.validationErrors);
       } else {
-        setGeneralErrorRapor("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
+        setGeneralErrorRapor(
+          "Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!"
+        );
       }
     } finally {
       setApiProgressRapor(false);
@@ -277,7 +301,7 @@ function Provider({ children }) {
     raporlar,
     setRaporlar,
     createRapor,
-    // deleteRaporById,
+    deleteRaporById,
     editRaporById,
     succesMessage,
     setSuccesMessage,
@@ -294,6 +318,8 @@ function Provider({ children }) {
     setApiProgressRapor,
     succesMessageRapor,
     setSuccesMessageRapor,
+    errorsRaporUpdate,
+    setErrorsRaporUpdate,
   };
 
   return (

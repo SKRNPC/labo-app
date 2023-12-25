@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
 import Input from "./Input";
-import { parseISO } from 'date-fns'; 
+import Modal from "./ImageModal";
 
 function RaporForm({ input, raporFormUpdate, onUpdate }) {
   const {
@@ -15,63 +15,97 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     generalErrorRapor,
     errorsRapor,
     setErrorsRapor,
+    errorsRaporUpdate,
+    setErrorsRaporUpdate,
   } = useContext(FormsContext);
 
-  const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
-  const [hastaIsim, setHastaIsim] = useState(input ? input.hastaIsim : "");
-  const [hastaKimlik, setHastaKimlik] = useState(
-    input ? input.hastaKimlik : ""
-  );
-  const [hastaTani, setHastaTani] = useState(input ? input.hastaTani : "");
-  const [taniDetay, setTaniDetay] = useState(input ? input.taniDetay : "");
-  const [selectedDate, setSelectedDate] = useState(
-    input ? new Date(input.selectedDate) : null
-  );
-  const [selectedFile, setSelectedFile] = useState(
-    input ? input.selectedFile : ""
-  );
-  const [selectedLaborant, setSelectedLaborant] = useState(
-    input ? input.selectedLaborant : ""
-  );
-  const handleLaborantChange = (event) => {
-    setSelectedLaborant(event.target.value);
-  };
-  useEffect(() => {
-    setErrorsRapor(function (lastErrors) {
-      return { ...lastErrors, hastaIsim: undefined };
-    });
-  }, [hastaIsim, setErrorsRapor]);
+  const [formState, setFormState] = useState({
+    dosyaNo: input ? input.dosyaNo : "",
+    hastaIsim: input ? input.hastaIsim : "",
+    hastaKimlik: input ? input.hastaKimlik : "",
+    hastaTani: input ? input.hastaTani : "",
+    taniDetay: input ? input.taniDetay : "",
+    selectedDate: input ? new Date(input.selectedDate) : null,
+    selectedFile: input ? input.selectedFile : "",
+    selectedLaborant: input ? input.selectedLaborant : "",
+  });
 
-  const handleChange = (event) => {
-    setDosyaNo(event.target.value);
+  const handleInputChange = (field, value) => {
+    let maxChar ;
+  
+    // Determine the maximum character limit for the current field
+    if (field === "dosyaNo") {
+      maxChar = 5;
+    } else if (field === "hastaKimlik") {
+      maxChar = 11;
+    }
+  
+    // Check for specific input validations
+    if (value.length > maxChar) {
+      // Handle error for exceeding length
+      if (raporFormUpdate) {
+        setErrorsRaporUpdate((lastErrors) => ({
+          ...lastErrors,
+          [field]: `${maxChar} karakter olmalıdır.`,
+        }));
+      } else {
+        setErrorsRapor((lastErrors) => ({
+          ...lastErrors,
+          [field]: `${maxChar} karakter olmalıdır.`,
+        }));
+      }
+      return; // Prevent further processing
+    }
+  
+    setFormState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  
+    // Clear related error on input change
+    if (raporFormUpdate) {
+      setErrorsRaporUpdate((lastErrors) => ({ ...lastErrors, [field]: undefined }));
+    } else {
+      setErrorsRapor((lastErrors) => ({ ...lastErrors, [field]: undefined }));
+    }
   };
-  const handleIsimChange = (event) => {
-    setHastaIsim(event.target.value);
+  
+
+  const handleLaborantChange = (event) => {
+    handleInputChange("selectedLaborant", event.target.value);
   };
-  const handleHastaKimlikChange = (event) => {
-    setHastaKimlik(event.target.value);
-  };
-  const handleTaniChange = (event) => {
-    setHastaTani(event.target.value);
-  };
-  const handleTaniDetayChange = (event) => {
-    setTaniDetay(event.target.value);
-  };
+
   const handleDateChange = (date) => {
-    setSelectedDate(date);
+    handleInputChange("selectedDate", date || new Date());
   };
+
   const handleFileChange = (event) => {
     if (event.target.files.length < 1) return;
+
     const file = event.target.files[0];
     const fileReader = new FileReader();
+
     fileReader.onloadend = () => {
-      const data = fileReader.result;
-      setSelectedFile(data);
+      handleInputChange("selectedFile", fileReader.result);
     };
+
     fileReader.readAsDataURL(file);
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const {
+      selectedLaborant,
+      dosyaNo,
+      hastaIsim,
+      hastaKimlik,
+      hastaTani,
+      taniDetay,
+      selectedDate,
+      selectedFile,
+    } = formState;
+
     if (raporFormUpdate) {
       onUpdate(
         input.id,
@@ -96,14 +130,30 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
         selectedFile
       );
     }
-    setSelectedLaborant("");
-    setDosyaNo("");
-    setHastaIsim("");
-    setHastaKimlik("");
-    setHastaTani("");
-    setTaniDetay("");
-    setSelectedDate("");
-    setSelectedFile("");
+
+    // Clear form inputs after submission
+    setFormState({
+      dosyaNo: "",
+      hastaIsim: "",
+      hastaKimlik: "",
+      hastaTani: "",
+      taniDetay: "",
+      selectedDate: null,
+      selectedFile: "",
+      selectedLaborant: "",
+    });
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [largeImage, setLargeImage] = useState("");
+
+  const openModal = (image) => {
+    setLargeImage(image);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -114,7 +164,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
           <form className="labForm">
             <label className="labo-label">Laborant Seç:</label>
             <select
-              value={selectedLaborant}
+              value={formState.selectedLaborant}
               onChange={handleLaborantChange}
               className="labo-input"
             >
@@ -128,48 +178,49 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               ))}
             </select>
             <Input
-              ad={dosyaNo}
+              ad={formState.dosyaNo}
               label="Dosya Numarası"
-              error={errorsRapor.dosyaNo}
-              onChange={handleChange}
+              error={errorsRaporUpdate.dosyaNo}
+              onChange={(e) => handleInputChange("dosyaNo", e.target.value)}
               turu="number"
             />
             <Input
-              ad={hastaIsim}
+              ad={formState.hastaIsim}
               label="Ad Soyad"
-              error={errorsRapor.hastaIsim}
-              onChange={handleIsimChange}
+              error={errorsRaporUpdate.hastaIsim}
+              onChange={(e) => handleInputChange("hastaIsim", e.target.value)}
               turu="text"
             />
             <Input
-              ad={hastaKimlik}
+              ad={formState.hastaKimlik}
               label="Hasta Kimlik No"
-              error={errorsRapor.hastaKimlik}
-              onChange={handleHastaKimlikChange}
+              error={errorsRaporUpdate.hastaKimlik}
+              onChange={(e) => handleInputChange("hastaKimlik", e.target.value)}
               turu="number"
             />
             <Input
-              ad={hastaTani}
+              ad={formState.hastaTani}
               label="Koyulan Tanı Başlığı"
-              error={errorsRapor.hastaTani}
-              onChange={handleTaniChange}
+              error={errorsRaporUpdate.hastaTani}
+              onChange={(e) => handleInputChange("hastaTani", e.target.value)}
               turu="text"
             />
             <label className="labo-label">Tanı Detayları</label>
             <textarea
-              value={taniDetay}
-              onChange={handleTaniDetayChange}
+              value={formState.taniDetay}
+              onChange={(e) => handleInputChange("taniDetay", e.target.value)}
               cols="30"
               rows="5"
               className="labo-input"
             ></textarea>
             <label className="labo-label">Rapor Tarihi</label>
             <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
+              selected={formState.selectedDate}
+              onChange={handleDateChange}
               dateFormat="dd/MM/yyyy"
               className="labo-input"
             />
+            <div className="hata-mesaj">{errorsRapor.DatePicker}</div>
             <label className="labo-label">Rapor Fotoğrafı</label>
             <input
               onChange={handleFileChange}
@@ -177,10 +228,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               accept=".jpg, .jpeg, .png"
               className="labo-input"
             />
-            {selectedFile && (
+            {formState.selectedFile && (
               <div>
                 <img
-                  src={selectedFile}
+                  src={formState.selectedFile}
                   alt="Selected File"
                   className="input-file"
                   style={{ maxWidth: "100%", maxHeight: "100%" }}
@@ -203,7 +254,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
           <form className="labForm">
             <label className="labo-label">Laborant Seç:</label>
             <select
-              value={selectedLaborant}
+              value={formState.selectedLaborant}
               onChange={handleLaborantChange}
               className="labo-input"
             >
@@ -218,48 +269,49 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
             </select>
             <div className="hata-mesaj">{errorsRapor.selectedLaborant}</div>
             <Input
-              ad={dosyaNo}
+              ad={formState.dosyaNo}
               label="Dosya Numarası"
               error={errorsRapor.dosyaNo}
-              onChange={handleChange}
+              onChange={(e) => handleInputChange("dosyaNo", e.target.value)}
               turu="number"
             />
             <Input
-              ad={hastaIsim}
+              ad={formState.hastaIsim}
               label="Ad Soyad"
               error={errorsRapor.hastaIsim}
-              onChange={handleIsimChange}
+              onChange={(e) => handleInputChange("hastaIsim", e.target.value)}
               turu="text"
             />
             <Input
-              ad={hastaKimlik}
+              ad={formState.hastaKimlik}
               label="Hasta Kimlik No"
               error={errorsRapor.hastaKimlik}
-              onChange={handleHastaKimlikChange}
+              onChange={(e) => handleInputChange("hastaKimlik", e.target.value)}
               turu="number"
             />
             <Input
-              ad={hastaTani}
+              ad={formState.hastaTani}
               label="Koyulan Tanı Başlığı"
               error={errorsRapor.hastaTani}
-              onChange={handleTaniChange}
+              onChange={(e) => handleInputChange("hastaTani", e.target.value)}
               turu="text"
             />
             <label className="labo-label">Tanı Detayları</label>
             <textarea
-              value={taniDetay}
-              onChange={handleTaniDetayChange}
+              value={formState.taniDetay}
+              onChange={(e) => handleInputChange("taniDetay", e.target.value)}
               cols="30"
               rows="5"
               className="labo-input"
             ></textarea>
             <label className="labo-label">Rapor Tarihi</label>
             <DatePicker
-              selected={selectedDate}
+              selected={formState.selectedDate}
               onChange={handleDateChange}
               dateFormat="dd/MM/yyyy"
               className="labo-input"
             />
+            <div className="hata-mesaj">{errorsRapor.selectedDate}</div>
             <label className="labo-label">Rapor Fotoğrafı</label>
             <input
               onChange={handleFileChange}
@@ -267,10 +319,14 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               accept=".jpg, .jpeg, .png"
               className="labo-input"
             />
-            {selectedFile && (
-              <div>
+
+            {isModalOpen && (
+              <Modal image={largeImage} closeModal={closeModal} />
+            )}
+            {formState.selectedFile && (
+              <div onClick={() => openModal(formState.selectedFile)}>
                 <img
-                  src={selectedFile}
+                  src={formState.selectedFile}
                   alt="Selected File"
                   className="input-file"
                   style={{ maxWidth: "100%", maxHeight: "100%" }}

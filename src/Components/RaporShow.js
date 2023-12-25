@@ -7,7 +7,6 @@ function RaporShow({ input }) {
   const { deleteRaporById, editRaporById } = useContext(FormsContext);
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
-    // onDelete(input.id);
     deleteRaporById(input.id);
   };
   const handleEditClick = () => {
