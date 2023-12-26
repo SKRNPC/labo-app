@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import RaporArama from "./Api/RaporAramaApi";
 import LaborantArama from "./Api/LaborantAramaApi";
+import FormsContext from "../context/Form";
 
 function SearchBar() {
   const [searchTermRapor, setSearchTermRapor] = useState("");
   const [searchTermLaborant, setSearchTermLaborant] = useState("");
-  const [generalError, setGeneralError] = useState("");
-  const [apiProgress, setApiProgress] = useState(false);
-  const [errors, setErrors] = useState([]);
+  const {
+    updateSearchedLaborants,
+    setApiProgress,
+    setApiProgressRapor,
+    updateSearchedRapors,
+  } = useContext(FormsContext);
+  const [searchError, setSearchError] = useState(null);
 
   const raporSearch = async () => {
-    setApiProgress(true);
+    setApiProgressRapor(true);
     try {
       let searchParam;
       // Eğer girdi bir sayı ise hastaKimlik, değilse hastaIsim olarak kabul et
@@ -23,24 +28,25 @@ function SearchBar() {
         const searchResult = await RaporArama(searchParam);
         // Arama başarılıysa, sonuçları kullanıcıya göster veya başka işlemler yap
         console.log("Arama Sonuçları: ", searchResult);
-        // Burada gelen veriyi kullanabilir veya başka işlemler yapabilirsiniz
+
+        if (searchResult.data.content.length > 0) {
+          updateSearchedRapors(searchResult.data.content);
+        } else {
+          setSearchError("Rapor bulunamadı.");
+        }
       } else {
         // searchTerm boşsa hiçbir şey listelenmez
         console.log("Arama Sonuçları: ", []);
+        updateSearchedRapors([]);
       }
-    } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
-      } else {
-        setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
-      }
+    } catch {
+      setSearchError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
-      setApiProgress(false);
+      setApiProgressRapor(false);
+      setSearchTermRapor("");
     }
   };
+
   const laborantSearch = async () => {
     setApiProgress(true);
 
@@ -51,24 +57,27 @@ function SearchBar() {
         searchResult = await LaborantArama({ isim: searchTermLaborant });
 
         // Arama başarılıysa, sonuçları kullanıcıya göster veya başka işlemler yap
-        console.log("Laborant Arama Sonuçları: ", searchResult);
-        // Burada gelen veriyi kullanabilir veya başka işlemler yapabilirsiniz
+        console.log("Laborant Arama Sonuçları: ", searchResult.data.content);
+
+        if (searchResult.data.content.length > 0) {
+          updateSearchedLaborants(searchResult.data.content);
+        } else {
+          setSearchError("Laborant bulunamadı.");
+        }
       } else {
         // searchTerm boşsa hiçbir şey listelenmez
         console.log("Laborant Arama Sonuçları: ", []);
+        updateSearchedLaborants([]);
       }
-    } catch (axiosError) {
-      if (
-        axiosError.response?.data &&
-        axiosError.response.data.status === 400
-      ) {
-        setErrors(axiosError.response.data.validationErrors);
-      } else {
-        setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
-      }
+    } catch {
+      setSearchError("Bir hata oluştu. Lütfen tekrar deneyin.");
     } finally {
       setApiProgress(false);
+      setSearchTermLaborant("");
     }
+  };
+  const handleInputChange = () => {
+    setSearchError(null);
   };
 
   return (
@@ -77,7 +86,10 @@ function SearchBar() {
         type="text"
         placeholder=""
         value={searchTermLaborant}
-        onChange={(e) => setSearchTermLaborant(e.target.value)}
+        onChange={(e) => {
+          setSearchTermLaborant(e.target.value);
+          handleInputChange();
+        }}
         className="search-input"
       />
       <button
@@ -90,12 +102,18 @@ function SearchBar() {
         type="text"
         placeholder=""
         value={searchTermRapor}
-        onChange={(e) => setSearchTermRapor(e.target.value)}
+        onChange={(e) => {
+          setSearchTermRapor(e.target.value);
+          handleInputChange();
+        }}
         className="search-input"
       />
       <button className="button-guncelle search-button" onClick={raporSearch}>
         Rapor Ara
       </button>
+      <div className="hata-mesaj-ara">
+        {searchError && <p className="error-message">{searchError}</p>}
+      </div>
     </div>
   );
 }

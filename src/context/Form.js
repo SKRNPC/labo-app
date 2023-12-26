@@ -25,6 +25,15 @@ function Provider({ children }) {
   const [generalError, setGeneralError] = useState();
   const [generalErrorRapor, setGeneralErrorRapor] = useState();
   const [apiProgressRapor, setApiProgressRapor] = useState(false);
+  const [searchedLaborants, setSearchedLaborants] = useState([]);
+  const [searchedRapors, setSearchedRapors] = useState([]);
+
+  const updateSearchedLaborants = (searchResults) => {
+    setSearchedLaborants(searchResults);
+  };
+  const updateSearchedRapors = (searchResults) => {
+    setSearchedRapors(searchResults);
+  };
 
   const createLaborant = async (isim, labKimlik) => {
     setSuccesMessage();
@@ -69,7 +78,7 @@ function Provider({ children }) {
     setApiProgress(true);
     try {
       // Make the API call to delete the laborant on the backend
-  
+
       await LaborantSil(id);
 
       // If the backend delete is successful, update the local state
@@ -96,14 +105,13 @@ function Provider({ children }) {
     setApiProgress(true);
     setErrors({});
     setGeneralError();
-    console.log(id)
+    console.log(id);
     try {
       // Make the API call to update the laborant on the backend
       await LaborantGuncelle(id, {
         isim: updatedIsim,
         labKimlik: updatedKimlik,
       });
-     
 
       // If the backend update is successful, update the local state
       setLaborants((prevLaborants) => {
@@ -322,6 +330,12 @@ function Provider({ children }) {
     setSuccesMessageRapor,
     errorsRaporUpdate,
     setErrorsRaporUpdate,
+    searchedLaborants,
+    setSearchedLaborants,
+    updateSearchedLaborants,
+    searchedRapors,
+    setSearchedRapors,
+    updateSearchedRapors
   };
 
   return (

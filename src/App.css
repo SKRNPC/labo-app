@@ -187,3 +187,9 @@ body{
     margin-top: 5px;
     color: brown;
 }
+.hata-mesaj-ara{
+  margin-left: 20px;
+  font-size: x-small;
+  margin-top: 0px;
+  color: brown;
+}

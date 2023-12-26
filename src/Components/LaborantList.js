@@ -4,7 +4,7 @@ import FormsContext from "../context/Form";
 import loadLaborants from "../Components/Api/LaborantListApi";
 
 function LaborantList() {
-  const { laborants, setLaborants } = useContext(FormsContext);
+  const { laborants, setLaborants,searchedLaborants } = useContext(FormsContext);
 
   useEffect(() => {
     async function getLaborants() {
@@ -16,9 +16,14 @@ function LaborantList() {
 
   return (
     <div className="laborant-list">
-      {laborants.content.map((input, index) => {
-        return <LaborantShow key={index} input={input} />;
-      })}
+      {/* Eğer laborant arama sonuçları varsa, onları listele; yoksa tüm laborantları listele */}
+      {searchedLaborants.length > 0
+        ? searchedLaborants.map((input, index) => (
+            <LaborantShow key={index} input={input} />
+          ))
+        : laborants.content.map((input, index) => (
+            <LaborantShow key={index} input={input} />
+          ))}
     </div>
   );
 }
