@@ -8,7 +8,7 @@ function LaborantShow({ input }) {
 
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
-    // onDelete(input.id);
+   
     deleteLaborantById(input.id)
   };
   const handleEditClick = () => {

@@ -149,12 +149,12 @@ body{
   border: 1px solid burlywood;
   border-radius: 5px;
   margin-left: 20px;
-  margin-right: 10px;
-  width: 415px;
+  margin-right: 5px;
+  width: 120px;
 }
 .search-button{
   margin-bottom: 2px;
-  width: 45px;
+  width: 100px;
   margin-top: 2px;
   border-radius: 5px;
   background-color: salmon;

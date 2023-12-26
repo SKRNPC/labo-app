@@ -1,7 +1,7 @@
 import LaborantShow from "./LaborantShow";
 import { useContext, useEffect } from "react";
 import FormsContext from "../context/Form";
-import loadLaborants from "./LaborantListApi";
+import loadLaborants from "../Components/Api/LaborantListApi";
 
 function LaborantList() {
   const { laborants, setLaborants } = useContext(FormsContext);

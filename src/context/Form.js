@@ -1,11 +1,11 @@
 import { createContext } from "react";
 import { useState } from "react";
-import LaborantEkle from "../Components/LaborantEkleApi.js";
-import LaborantGuncelle from "../Components/LaborantGuncelleApi.js";
-import LaborantSil from "../Components/LaborantSilApi.js";
-import RaporEkle from "../Components/RaporEkleApi.js";
-import RaporGuncelle from "../Components/RaporGuncelleApi.js";
-import RaporSil from "../Components/RaporSilApi.js";
+import LaborantEkle from "../Components/Api/LaborantEkleApi.js";
+import LaborantGuncelle from "../Components/Api/LaborantGuncelleApi.js";
+import LaborantSil from "../Components/Api/LaborantSilApi.js";
+import RaporEkle from "../Components/Api/RaporEkleApi.js";
+import RaporGuncelle from "../Components/Api/RaporGuncelleApi.js";
+import RaporSil from "../Components/Api/RaporSilApi.js";
 const FormsContext = createContext();
 
 function Provider({ children }) {
@@ -69,6 +69,7 @@ function Provider({ children }) {
     setApiProgress(true);
     try {
       // Make the API call to delete the laborant on the backend
+  
       await LaborantSil(id);
 
       // If the backend delete is successful, update the local state
@@ -95,13 +96,14 @@ function Provider({ children }) {
     setApiProgress(true);
     setErrors({});
     setGeneralError();
-
+    console.log(id)
     try {
       // Make the API call to update the laborant on the backend
       await LaborantGuncelle(id, {
         isim: updatedIsim,
         labKimlik: updatedKimlik,
       });
+     
 
       // If the backend update is successful, update the local state
       setLaborants((prevLaborants) => {

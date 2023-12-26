@@ -1,7 +1,7 @@
 import RaporShow from "./RaporShow";
 import { useContext, useEffect } from "react";
 import FormsContext from "../context/Form";
-import loadRapors from "./RaporListApi";
+import loadRapors from "../Components/Api/RaporListApi";
 function RaporList() {
   const { raporlar, setRaporlar } = useContext(FormsContext);
  
