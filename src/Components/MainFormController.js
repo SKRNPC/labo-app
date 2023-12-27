@@ -1,9 +1,13 @@
 import RaporList from "./RaporList";
+import RaporSirala from "./RaporSiralama";
 
 function MainFormController() {
   return (
-    <div className="rapor-div">
-      <RaporList />
+    <div>
+      <div><RaporSirala /></div>
+      <div className="rapor-div">
+        <RaporList />
+      </div>
     </div>
   );
 }

@@ -93,7 +93,7 @@ function SearchBar() {
         className="search-input"
       />
       <button
-        className="button-guncelle search-button"
+        className="button-guncelle search-button-ara"
         onClick={laborantSearch}
       >
         Laborant Ara
@@ -108,7 +108,7 @@ function SearchBar() {
         }}
         className="search-input"
       />
-      <button className="button-guncelle search-button" onClick={raporSearch}>
+      <button className="button-guncelle search-button-ara" onClick={raporSearch}>
         Rapor Ara
       </button>
       <div className="hata-mesaj-ara">

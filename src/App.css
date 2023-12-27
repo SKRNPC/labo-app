@@ -159,6 +159,13 @@ body{
   border-radius: 5px;
   background-color: salmon;
 }
+.search-button-ara{
+  margin-bottom: 2px;
+  width: 100px;
+  margin-top: 2px;
+  border-radius: 5px;
+  background-color: salmon;
+}
 .spinner {
   border: 6px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
@@ -192,4 +199,17 @@ body{
   font-size: x-small;
   margin-top: 0px;
   color: brown;
+}
+.rapor-sirala{
+  margin-left: 60px;
+  margin-top: 2px;
+}
+.button-sirala{
+  background-color: salmon;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  font-size: 15px;
 }
