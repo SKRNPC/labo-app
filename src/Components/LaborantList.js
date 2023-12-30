@@ -4,26 +4,26 @@ import FormsContext from "../context/Form";
 import loadLaborants from "../Components/Api/LaborantListApi";
 
 function LaborantList() {
-  const { laborants, setLaborants,searchedLaborants } = useContext(FormsContext);
-
+  const { laborants, setLaborants,searchedLaborants,laborantUpdated} = useContext(FormsContext);
+ 
+  
   useEffect(() => {
     async function getLaborants() {
-      const response = await loadLaborants();
-      setLaborants(response.data);
+      
+        const response = await loadLaborants();
+        setLaborants(response.data);
+        console.log(laborantUpdated)
     }
     getLaborants();
-  }, [setLaborants]);
+  },[setLaborants, laborantUpdated]);
+
+ const displayedLaborants = searchedLaborants.length > 0 ? searchedLaborants : laborants.content;
 
   return (
     <div className="laborant-list">
-      {/* Eğer laborant arama sonuçları varsa, onları listele; yoksa tüm laborantları listele */}
-      {searchedLaborants.length > 0
-        ? searchedLaborants.map((input, index) => (
-            <LaborantShow key={index} input={input} />
-          ))
-        : laborants.content.map((input, index) => (
-            <LaborantShow key={index} input={input} />
-          ))}
+      {displayedLaborants.map((input, index) => (
+        <LaborantShow key={index} input={input} />
+      ))}
     </div>
   );
 }

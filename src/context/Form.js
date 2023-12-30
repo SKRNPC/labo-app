@@ -20,6 +20,7 @@ function Provider({ children }) {
   const [succesMessage, setSuccesMessage] = useState();
   const [succesMessageRapor, setSuccesMessageRapor] = useState();
   const [errors, setErrors] = useState({});
+  const [errorsLaborantUpdate, setErrorsLaborantUpdate] = useState({});
   const [errorsRapor, setErrorsRapor] = useState({});
   const [errorsRaporUpdate, setErrorsRaporUpdate] = useState({});
   const [generalError, setGeneralError] = useState();
@@ -27,6 +28,8 @@ function Provider({ children }) {
   const [apiProgressRapor, setApiProgressRapor] = useState(false);
   const [searchedLaborants, setSearchedLaborants] = useState([]);
   const [searchedRapors, setSearchedRapors] = useState([]);
+  const [laborantUpdated, setLaborantUpdated] = useState(false);
+  const [raporUpdated, setRaporUpdated] = useState(false);
 
   const updateSearchedLaborants = (searchResults) => {
     setSearchedLaborants(searchResults);
@@ -49,11 +52,13 @@ function Provider({ children }) {
 
       // Sadece backend doğrulaması başarılıysa yeni laborantı listeye ekle
       const createdLaborant = {
-        id: response.data.id, // Backend'den dönen ID'yi kullanın
+        id: response.data.id, 
+        // Backend'den dönen ID'yi kullanın
         isim,
         labKimlik,
       };
-
+      console.log("API Response id:", response.data.id);
+      
       setLaborants((prevLaborants) => {
         return {
           ...prevLaborants,
@@ -71,6 +76,7 @@ function Provider({ children }) {
       }
     } finally {
       setApiProgress(false);
+      
     }
   };
 
@@ -103,7 +109,7 @@ function Provider({ children }) {
 
   const editInputById = async (id, updatedIsim, updatedKimlik) => {
     setApiProgress(true);
-    setErrors({});
+    setErrorsLaborantUpdate({})
     setGeneralError();
     console.log(id);
     try {
@@ -138,7 +144,7 @@ function Provider({ children }) {
         axiosError.response?.data &&
         axiosError.response.data.status === 400
       ) {
-        setErrors(axiosError.response.data.validationErrors);
+        setErrorsLaborantUpdate(axiosError.response.data.validationErrors);
       } else {
         setGeneralError("Beklenmeyen bir hata oluştu. Lütfen tekrar deneyin!");
       }
@@ -335,7 +341,13 @@ function Provider({ children }) {
     updateSearchedLaborants,
     searchedRapors,
     setSearchedRapors,
-    updateSearchedRapors
+    updateSearchedRapors,
+    errorsLaborantUpdate,
+    setErrorsLaborantUpdate,
+    laborantUpdated,
+    setLaborantUpdated,
+    raporUpdated,
+    setRaporUpdated
   };
 
   return (

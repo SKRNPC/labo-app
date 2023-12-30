@@ -6,7 +6,7 @@ import FormsContext from "../context/Form";
 import Input from "./Input";
 import Modal from "./ImageModal";
 
-function RaporForm({ input, raporFormUpdate, onUpdate }) {
+function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
   const {
     laborants,
     succesMessageRapor,
@@ -90,6 +90,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
     };
 
     fileReader.readAsDataURL(file);
+  };
+  const handleDeleteClick =  async (event)=> {
+    event.preventDefault();
+      onDelete(input.id)
   };
 
   const handleSubmit = async (event) => {
@@ -245,6 +249,9 @@ function RaporForm({ input, raporFormUpdate, onUpdate }) {
               >
                 Güncelle
               </button>
+              <button className="button-sil" onClick={handleDeleteClick}>
+              Sil
+            </button>
             </footer>
           </form>
         </div>

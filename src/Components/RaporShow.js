@@ -4,12 +4,13 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 
 function RaporShow({ input }) {
-  const { deleteRaporById, editRaporById } = useContext(FormsContext);
+  const { deleteRaporById, editRaporById,setRaporUpdated } = useContext(FormsContext);
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
     deleteRaporById(input.id);
   };
   const handleEditClick = () => {
+    setRaporUpdated(true)
     setShowEdit(!showEdit);
   };
   const handleSubmit = (
@@ -44,6 +45,7 @@ function RaporShow({ input }) {
           input={input}
           raporFormUpdate={true}
           onUpdate={handleSubmit}
+          onDelete={handleDeleteClick}
         />
       ) : (
         <div>
@@ -55,9 +57,6 @@ function RaporShow({ input }) {
             <strong>Tanı:</strong> {input.hastaTani}
           </p>
           <div>
-            <button className="button-sil" onClick={handleDeleteClick}>
-              Sil
-            </button>
             <button className="button-guncelle" onClick={handleEditClick}>
               Güncelle
             </button>

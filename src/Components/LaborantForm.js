@@ -3,7 +3,8 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 import Input from "./Input";
 
-function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
+function LaborantForm({ input, laborantFormUpdate, onUpdate, onDelete }) {
+
   const {
     createLaborant,
     setErrors,
@@ -11,11 +12,13 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
     succesMessage,
     generalError,
     apiProgress,
+    errorsLaborantUpdate, 
+    setErrorsLaborantUpdate
   } = useContext(FormsContext);
 
   const [isim, setIsim] = useState(input ? input.isim : "");
   const [labKimlik, setLabKimlik] = useState(input ? input.labKimlik : "");
-
+  // console.log("aasd",input)
   useEffect(() => {
     setErrors(function (lastErrors) {
       return { ...lastErrors, isim: undefined };
@@ -33,13 +36,16 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
   const handleKimlikChange = (event) => {
     setLabKimlik(event.target.value);
   };
+  const handleDeleteClick =  async (event)=> {
+    event.preventDefault();
+      onDelete(input.id)
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (laborantFormUpdate) {
-      console.log("input.id", input.id);
-
+      console.log("input.id", input.id,input.isim);
+      
       onUpdate(input.id, isim, labKimlik);
     } else {
       createLaborant(isim, labKimlik);
@@ -58,14 +64,14 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
               <Input
                 ad={isim}
                 label="Ad Soyad"
-                error={errors.isim}
+                error={errorsLaborantUpdate.isim}
                 onChange={handleChange}
                 turu="text"
               />
               <Input
                 ad={labKimlik}
                 label="Hastane Kimlik No"
-                error={errors.labKimlik}
+                error={errorsLaborantUpdate.labKimlik}
                 onChange={handleKimlikChange}
                 turu="number"
               />
@@ -81,6 +87,9 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate }) {
                 >
                   Güncelle
                 </button>
+                <button className="button-sil" onClick={handleDeleteClick}>
+                Sil
+              </button>
               </footer>
             </form>
           </div>
