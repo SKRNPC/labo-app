@@ -241,7 +241,9 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
                   style={{ maxWidth: "100%", maxHeight: "100%" }}
                 />
               </div>
+              
             )}
+            
             <footer>
               <button
                 className="labo-button update-button"
@@ -340,6 +342,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
                 />
               </div>
             )}
+            <div className="hata-mesaj">{errorsRapor.selectedFile}</div>
             <footer>
               {succesMessageRapor && (
                 <div className="alert">
