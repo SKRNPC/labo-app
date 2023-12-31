@@ -52,13 +52,13 @@ function Provider({ children }) {
 
       // Sadece backend doğrulaması başarılıysa yeni laborantı listeye ekle
       const createdLaborant = {
-        id: response.data.id, 
+        id: response.data.id,
         // Backend'den dönen ID'yi kullanın
         isim,
         labKimlik,
       };
       console.log("API Response id:", response.data.id);
-      
+
       setLaborants((prevLaborants) => {
         return {
           ...prevLaborants,
@@ -76,7 +76,6 @@ function Provider({ children }) {
       }
     } finally {
       setApiProgress(false);
-      
     }
   };
 
@@ -98,6 +97,13 @@ function Provider({ children }) {
           content: afterDeletingInputs,
         };
       });
+      //Arama sonucunda bulunan laborantın silie işlemi
+      setSearchedLaborants((prevSearchedLaborants) => {
+        const updatedSearchedLaborants = prevSearchedLaborants.filter(
+          (input) => input.id !== id
+        );
+        return updatedSearchedLaborants;
+      });
 
       setSuccesMessage("Laborant silme başarılı");
     } catch (axiosError) {
@@ -109,9 +115,9 @@ function Provider({ children }) {
 
   const editInputById = async (id, updatedIsim, updatedKimlik) => {
     setApiProgress(true);
-    setErrorsLaborantUpdate({})
+    setErrorsLaborantUpdate({});
     setGeneralError();
-    console.log(id);
+
     try {
       // Make the API call to update the laborant on the backend
       await LaborantGuncelle(id, {
@@ -136,6 +142,22 @@ function Provider({ children }) {
           ...prevLaborants,
           content: updatedInputs,
         };
+      });
+      //arama sonucu bulunan laborantların güncelleme işlemi
+      setSearchedLaborants((prevSearchedLaborants) => {
+        const updatedSearchedLaborants = prevSearchedLaborants.map(
+          (input) => {
+            if (input.id === id) {
+              return {
+                ...input, // Spread the existing properties
+                isim: updatedIsim,
+                labKimlik: updatedKimlik,
+              };
+            }
+            return input;
+          }
+        );
+        return updatedSearchedLaborants;
       });
 
       setSuccesMessage("Laborant güncelleme başarılı");
@@ -235,6 +257,14 @@ function Provider({ children }) {
         };
       });
 
+      //Update the state for searched reports if you have a separate state for it
+      setSearchedRapors((prevSearchedRapors) => {
+        const updatedSearchedRapors = prevSearchedRapors.filter(
+          (input) => input.id !== id
+        );
+        return updatedSearchedRapors;
+      });
+
       setSuccesMessageRapor("Rapor silme başarılı");
     } catch (axiosError) {
       setGeneralErrorRapor(
@@ -292,6 +322,27 @@ function Provider({ children }) {
           content: updatedInputs,
         };
       });
+
+      // Update the state for searched reports if you have a separate state for it
+      setSearchedRapors((prevSearchedRapors) => {
+        const updatedSearchedRapors = prevSearchedRapors.map((input) => {
+          if (input.id === id) {
+            return {
+              ...input, // Spread the existing properties
+              selectedLaborant: updatedSelectedLaborant,
+              dosyaNo: updatedDosyaNo,
+              hastaIsim: updatedHastaIsim,
+              hastaKimlik: updatedHastaKimlik,
+              hastaTani: updatedHastaTani,
+              taniDetay: updatedTaniDetay,
+              selectedDate: updatedSelectedDate.toISOString(),
+              selectedFile: updatedSelectedFile, // Spread the updated fields
+            };
+          }
+          return input;
+        });
+        return updatedSearchedRapors;
+      });
       setSuccesMessageRapor("Rapor güncelleme başarılı");
     } catch (axiosError) {
       if (
@@ -347,7 +398,7 @@ function Provider({ children }) {
     laborantUpdated,
     setLaborantUpdated,
     raporUpdated,
-    setRaporUpdated
+    setRaporUpdated,
   };
 
   return (
