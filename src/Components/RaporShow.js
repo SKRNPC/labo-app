@@ -8,6 +8,7 @@ function RaporShow({ input }) {
   const [showEdit, setShowEdit] = useState(false);
   const handleDeleteClick = () => {
     deleteRaporById(input.id);
+    setShowEdit(!showEdit);
   };
   const handleEditClick = () => {
     setRaporUpdated(true)

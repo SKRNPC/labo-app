@@ -16,7 +16,7 @@ function LaborantShow({ input }) {
   const handleDeleteClick = () => {
     
     deleteLaborantById(input.id)
-    setLaborantUpdated(false)
+    setShowEdit(!showEdit);
 };
   const handleSubmit = (id, updatedIsim, updatedKimlik) => {
     setShowEdit(false);
