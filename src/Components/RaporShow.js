@@ -25,7 +25,6 @@ function RaporShow({ input }) {
     updatedSelectedDate,
     updatedSelectedFile
   ) => {
-    setShowEdit(false);
     editRaporById(
       id,
       updatedSelectedLaborant,
@@ -38,6 +37,9 @@ function RaporShow({ input }) {
       updatedSelectedFile
     );
   };
+  const handleCloseClick = () => {
+    setShowEdit(false);
+  };
 
   return (
     <div className="hasta-show">
@@ -47,6 +49,7 @@ function RaporShow({ input }) {
           raporFormUpdate={true}
           onUpdate={handleSubmit}
           onDelete={handleDeleteClick}
+          onClose={handleCloseClick}
         />
       ) : (
         <div>

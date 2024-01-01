@@ -20,7 +20,8 @@ function Provider({ children }) {
   const [succesMessage, setSuccesMessage] = useState();
   const [succesMessageUpdate, setSuccesMessageUpdate] = useState();
   const [succesMessageRapor, setSuccesMessageRapor] = useState();
-    const [errors, setErrors] = useState({});
+  const [succesMessageRaporUpdate, setSuccesMessageRaporUpdate] = useState();
+  const [errors, setErrors] = useState({});
   const [errorsLaborantUpdate, setErrorsLaborantUpdate] = useState({});
   const [errorsRapor, setErrorsRapor] = useState({});
   const [errorsRaporUpdate, setErrorsRaporUpdate] = useState({});
@@ -342,7 +343,7 @@ function Provider({ children }) {
         });
         return updatedSearchedRapors;
       });
-      setSuccesMessageRapor("Rapor güncelleme başarılı");
+      setSuccesMessageRaporUpdate("Rapor güncelleme başarılı");
     } catch (axiosError) {
       if (
         axiosError.response?.data &&
@@ -400,6 +401,8 @@ function Provider({ children }) {
     setRaporUpdated,
     succesMessageUpdate,
     setSuccesMessageUpdate,
+    succesMessageRaporUpdate,
+    setSuccesMessageRaporUpdate,
   };
 
   return (

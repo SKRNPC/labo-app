@@ -6,7 +6,7 @@ import FormsContext from "../context/Form";
 import Input from "./Input";
 import Modal from "./ImageModal";
 
-function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
+function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
   const {
     laborants,
     succesMessageRapor,
@@ -17,6 +17,8 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
     setErrorsRapor,
     errorsRaporUpdate,
     setErrorsRaporUpdate,
+    succesMessageRaporUpdate,
+    setSuccesMessageRaporUpdate
   } = useContext(FormsContext);
 
   const [formState, setFormState] = useState({
@@ -123,6 +125,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
         selectedFile
       );
     } else {
+      
       createRapor(
         selectedLaborant,
         dosyaNo,
@@ -133,19 +136,17 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
         selectedDate,
         selectedFile
       );
+      setFormState({
+        dosyaNo: "",
+        hastaIsim: "",
+        hastaKimlik: "",
+        hastaTani: "",
+        taniDetay: "",
+        selectedDate: null,
+        selectedFile: "",
+        selectedLaborant: "",
+      });
     }
-
-    // Clear form inputs after submission
-    setFormState({
-      dosyaNo: "",
-      hastaIsim: "",
-      hastaKimlik: "",
-      hastaTani: "",
-      taniDetay: "",
-      selectedDate: null,
-      selectedFile: "",
-      selectedLaborant: "",
-    });
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -159,12 +160,20 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const clearMessages = () => {
+    // Bu fonksiyon succesMessage ve generalError state'lerini sıfırlar
+    setSuccesMessageRaporUpdate(""); // succesMessage'ı sıfırlayın
+    onClose(); // generalError'u sıfırlayın
+  };
 
   return (
     <div>
       {raporFormUpdate ? (
         <div className="rapor-update">
           <h1 className="title-labo">Raporu Güncelle</h1>
+          <span className="close-icon-rapor" onClick={clearMessages}>
+              x
+            </span>
           <form className="labForm">
             <label className="labo-label">Laborant Seç:</label>
             <select
@@ -245,6 +254,16 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete }) {
             )}
             
             <footer>
+            {succesMessageRaporUpdate && (
+                <div className="alert">
+                  <strong>{succesMessageRaporUpdate}</strong>
+                </div>
+              )}{" "}
+              {generalErrorRapor && (
+                <div className="alert">
+                  <strong>{generalErrorRapor}</strong>
+                </div>
+              )}
               <button
                 className="labo-button update-button"
                 onClick={handleSubmit}
