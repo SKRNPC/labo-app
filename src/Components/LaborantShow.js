@@ -19,10 +19,10 @@ function LaborantShow({ input }) {
     setShowEdit(!showEdit);
 };
   const handleSubmit = (id, updatedIsim, updatedKimlik) => {
-    setShowEdit(false);
-    setLaborantUpdated(false)
     editInputById(id, updatedIsim, updatedKimlik)
-    // onUpdate(id, updatedIsim, updatedKimlik);
+  };
+  const handleCloseClick = () => {
+    setShowEdit(false);
   };
 
   return (
@@ -33,6 +33,7 @@ function LaborantShow({ input }) {
           laborantFormUpdate={true}
           onUpdate={handleSubmit}
           onDelete={handleDeleteClick}
+          onClose={handleCloseClick}
         />
       ) : (
         <div className="labo-show">

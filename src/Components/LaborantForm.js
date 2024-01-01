@@ -3,17 +3,25 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 import Input from "./Input";
 
-function LaborantForm({ input, laborantFormUpdate, onUpdate, onDelete }) {
-
+function LaborantForm({
+  input,
+  laborantFormUpdate,
+  onUpdate,
+  onDelete,
+  onClose,
+}) {
   const {
     createLaborant,
     setErrors,
     errors,
     succesMessage,
+    setSuccesMessage,
+    setGeneralError,
     generalError,
     apiProgress,
-    errorsLaborantUpdate, 
-    setErrorsLaborantUpdate
+    errorsLaborantUpdate,
+    succesMessageUpdate,
+    setSuccesMessageUpdate,
   } = useContext(FormsContext);
 
   const [isim, setIsim] = useState(input ? input.isim : "");
@@ -36,22 +44,29 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate, onDelete }) {
   const handleKimlikChange = (event) => {
     setLabKimlik(event.target.value);
   };
-  const handleDeleteClick =  async (event)=> {
+  const handleDeleteClick = async (event) => {
     event.preventDefault();
-      onDelete(input.id)
+    onDelete(input.id);
+  };
+  const clearMessages = () => {
+    // Bu fonksiyon succesMessage ve generalError state'lerini sıfırlar
+    setSuccesMessage(""); // succesMessage'ı sıfırlayın
+    setGeneralError("");
+    onClose(); // generalError'u sıfırlayın
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     if (laborantFormUpdate) {
-      console.log("input.id", input.id,input.isim);
-      
+      console.log("input.id", input.id, input.isim);
+
       onUpdate(input.id, isim, labKimlik);
     } else {
       createLaborant(isim, labKimlik);
+      setIsim("");
+      setLabKimlik("");
     }
-    setIsim("");
-    setLabKimlik("");
   };
   return (
     <div>
@@ -60,11 +75,14 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate, onDelete }) {
         <div className="labo-edit">
           <div className="labo-update">
             <h1 className="title-labo">Bilgileri Güncelle</h1>
+            <span className="close-icon" onClick={clearMessages}>
+              x
+            </span>
             <form className="labForm">
               <Input
                 ad={isim}
                 label="Ad Soyad"
-                error={errorsLaborantUpdate.isim}
+                // error={errorsLaborantUpdate.isim}
                 onChange={handleChange}
                 turu="text"
               />
@@ -76,6 +94,11 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate, onDelete }) {
                 turu="number"
               />
               <footer>
+                {succesMessageUpdate && (
+                  <div className="alert">
+                    <strong>{succesMessageUpdate}</strong>
+                  </div>
+                )}
                 {generalError && (
                   <div className="alert">
                     <strong>{generalError}</strong>
@@ -88,8 +111,8 @@ function LaborantForm({ input, laborantFormUpdate, onUpdate, onDelete }) {
                   Güncelle
                 </button>
                 <button className="button-sil" onClick={handleDeleteClick}>
-                Sil
-              </button>
+                  Sil
+                </button>
               </footer>
             </form>
           </div>

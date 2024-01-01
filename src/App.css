@@ -44,7 +44,8 @@ body{
 }
 .title-labo{
   font-size: 15px;
-  color: indianred
+  color: indianred;
+  display: contents;
 }
 .labo-label{
   margin: 5px 0px;
@@ -213,3 +214,12 @@ body{
   padding: 5px;
   font-size: 15px;
 }
+.close-icon-rapor{
+  margin-left: 140px;
+  cursor: pointer;
+}
+.close-icon{
+  margin-left: 30px;
+  cursor: pointer;
+}
+

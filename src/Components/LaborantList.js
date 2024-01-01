@@ -12,7 +12,6 @@ function LaborantList() {
       
         const response = await loadLaborants();
         setLaborants(response.data);
-        console.log(laborantUpdated)
     }
     getLaborants();
   },[setLaborants, laborantUpdated]);

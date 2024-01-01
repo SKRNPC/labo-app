@@ -18,8 +18,9 @@ function Provider({ children }) {
 
   const [apiProgress, setApiProgress] = useState(false);
   const [succesMessage, setSuccesMessage] = useState();
+  const [succesMessageUpdate, setSuccesMessageUpdate] = useState();
   const [succesMessageRapor, setSuccesMessageRapor] = useState();
-  const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState({});
   const [errorsLaborantUpdate, setErrorsLaborantUpdate] = useState({});
   const [errorsRapor, setErrorsRapor] = useState({});
   const [errorsRaporUpdate, setErrorsRaporUpdate] = useState({});
@@ -145,22 +146,20 @@ function Provider({ children }) {
       });
       //arama sonucu bulunan laborantların güncelleme işlemi
       setSearchedLaborants((prevSearchedLaborants) => {
-        const updatedSearchedLaborants = prevSearchedLaborants.map(
-          (input) => {
-            if (input.id === id) {
-              return {
-                ...input, // Spread the existing properties
-                isim: updatedIsim,
-                labKimlik: updatedKimlik,
-              };
-            }
-            return input;
+        const updatedSearchedLaborants = prevSearchedLaborants.map((input) => {
+          if (input.id === id) {
+            return {
+              ...input, // Spread the existing properties
+              isim: updatedIsim,
+              labKimlik: updatedKimlik,
+            };
           }
-        );
+          return input;
+        });
         return updatedSearchedLaborants;
       });
 
-      setSuccesMessage("Laborant güncelleme başarılı");
+      setSuccesMessageUpdate("Laborant güncelleme başarılı");
     } catch (axiosError) {
       if (
         axiosError.response?.data &&
@@ -399,6 +398,8 @@ function Provider({ children }) {
     setLaborantUpdated,
     raporUpdated,
     setRaporUpdated,
+    succesMessageUpdate,
+    setSuccesMessageUpdate,
   };
 
   return (
