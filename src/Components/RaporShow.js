@@ -8,23 +8,13 @@ function RaporShow({ input }) {
     setRaporUpdated, // Rapor güncellendiğini ayarlayan fonksiyon
     deleteRaporById, // Raporu silen fonksiyon
     editRaporById, // Raporu güncelleyen fonksiyon
-    activeRaporId, // Aktif rapor ID'si
-    setActiveRaporId, // Aktif rapor ID'sini ayarlayan fonksiyon
   } = useContext(FormsContext);
 
   const [showEdit, setShowEdit] = useState(false);
 
   const handleEditClick = () => {
     setRaporUpdated(true);
-    if (activeRaporId && activeRaporId !== input.id) {
-      setActiveRaporId(input.id);
-      setShowEdit(true); // Bu rapor için düzenlemeyi aç
-    } else if (activeRaporId === input.id) {
-      setShowEdit(!showEdit); // Eğer bu rapor zaten aktifse, showEdit'i toggle edin
-    } else {
-      setActiveRaporId(input.id); // Bu raporı aktif düzenleme olarak ayarla
-      setShowEdit(true); // Ve showEdit'i true yaparak formu açın
-    }
+    setShowEdit(!showEdit);
   };
 
   const handleDeleteClick = () => {
@@ -62,7 +52,7 @@ function RaporShow({ input }) {
 
   return (
     <div className="hasta-show">
-       {activeRaporId === input.id && showEdit? (
+       {showEdit? (
         <RaporForm
           input={input}
           raporFormUpdate={true}

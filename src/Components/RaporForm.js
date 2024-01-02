@@ -19,7 +19,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
     setErrorsRaporUpdate,
     succesMessageRaporUpdate,
     setSuccesMessageRaporUpdate,
-    // setRaporlar
+    setRaporUpdated
   } = useContext(FormsContext);
 
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
@@ -121,12 +121,14 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
   const handleDeleteClick = async (event) => {
     event.preventDefault();
     onDelete(input.id);
+    setRaporUpdated(false);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
   
     if (raporFormUpdate) {
+      setRaporUpdated(false)
       onUpdate(
         input.id,
         selectedLaborant,

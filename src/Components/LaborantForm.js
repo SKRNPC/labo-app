@@ -22,6 +22,7 @@ function LaborantForm({
     succesMessageUpdate,
     setSuccesMessageUpdate,
     setErrorsLaborantUpdate,
+    setLaborantUpdated
   } = useContext(FormsContext);
 
   const [isim, setIsim] = useState(input ? input.isim : "");
@@ -68,6 +69,7 @@ function LaborantForm({
   const handleDeleteClick = async (event) => {
     event.preventDefault();
     onDelete(input.id);
+    setLaborantUpdated(false)
   };
 
   const clearMessages = () => {
@@ -84,6 +86,7 @@ function LaborantForm({
       console.log("input.id", input.id, input.isim);
 
       onUpdate(input.id, isim, labKimlik);
+      setLaborantUpdated(false)
     } else {
       createLaborant(isim, labKimlik);
       setIsim("");

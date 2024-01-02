@@ -8,8 +8,6 @@ function LaborantShow({ input }) {
     setLaborantUpdated,
     deleteLaborantById,
     editInputById,
-    activeEditId,
-    setActiveEditId,
   } = useContext(FormsContext);
 
 
@@ -17,24 +15,12 @@ function LaborantShow({ input }) {
 
   const handleEditClick = () => {
     setLaborantUpdated(true)
-    if (activeEditId && activeEditId !== input.id) {
-      setActiveEditId(input.id);
-      setShowEdit(true); // Bu laborant için düzenlemeyi aç
-    } 
-    // Eğer bu laborant zaten aktifse, showEdit'i toggle edin
-    else if (activeEditId === input.id) {
-      setShowEdit(!showEdit);
-    } 
-    // Eğer şu anda hiçbir düzenleme aktif değilse veya bu laborant aktif değilse
-    else {
-      setActiveEditId(input.id); // Bu laborantı aktif düzenleme olarak ayarla
-      setShowEdit(true); // Ve showEdit'i true yaparak formu açın
-    }
+    setShowEdit(!showEdit);
   };
 
   const handleDeleteClick = () => {
     deleteLaborantById(input.id);
-    setShowEdit(!showEdit);
+    setShowEdit(!showEdit);  
   };
   const handleSubmit = (id, updatedIsim, updatedKimlik) => {
     editInputById(id, updatedIsim, updatedKimlik);
@@ -45,7 +31,7 @@ function LaborantShow({ input }) {
 
   return (
     <div>
-      {activeEditId === input.id && showEdit ? (
+      {showEdit ? (
         // Eğer aktif edit ID bu laborant ise ve showEdit true ise formu göster
         <LaborantForm
           input={input}
