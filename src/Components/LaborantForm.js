@@ -21,6 +21,7 @@ function LaborantForm({
     errorsLaborantUpdate,
     succesMessageUpdate,
     setSuccesMessageUpdate,
+    setErrorsLaborantUpdate,
   } = useContext(FormsContext);
 
   const [isim, setIsim] = useState(input ? input.isim : "");
@@ -41,12 +42,34 @@ function LaborantForm({
     setIsim(event.target.value);
   };
   const handleKimlikChange = (event) => {
-    setLabKimlik(event.target.value);
+    const value = event.target.value;
+    const field = "labKimlik";
+    let maxChar = 7; // Hastane Kimlik No için maksimum karakter sayısı
+
+    if (value.length > maxChar) {
+      if (!laborantFormUpdate) {
+        setErrors((lastErrors) => ({
+          ...lastErrors,
+          [field]: `${maxChar} karakter olmalıdır.`,
+        }));
+      }
+    } else {
+      setLabKimlik(value);
+
+      if (!laborantFormUpdate) {
+        setErrorsLaborantUpdate((lastErrors) => ({
+          ...lastErrors,
+          [field]: undefined,
+        }));
+      }
+    }
   };
+
   const handleDeleteClick = async (event) => {
     event.preventDefault();
     onDelete(input.id);
   };
+
   const clearMessages = () => {
     // Bu fonksiyon succesMessage ve generalError state'lerini sıfırlar
     setSuccesMessageUpdate(""); // succesMessage'ı sıfırlayın
@@ -92,6 +115,7 @@ function LaborantForm({
                 onChange={handleKimlikChange}
                 turu="number"
                 disabled={true}
+                maxLenght={7}
               />
               <footer>
                 {succesMessageUpdate && (

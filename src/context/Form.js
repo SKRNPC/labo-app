@@ -32,6 +32,9 @@ function Provider({ children }) {
   const [searchedRapors, setSearchedRapors] = useState([]);
   const [laborantUpdated, setLaborantUpdated] = useState(false);
   const [raporUpdated, setRaporUpdated] = useState(false);
+  const [activeEditId, setActiveEditId] = useState(null);
+  const [activeRaporId, setActiveRaporId] = useState(null);
+  
 
   const updateSearchedLaborants = (searchResults) => {
     setSearchedLaborants(searchResults);
@@ -403,6 +406,10 @@ function Provider({ children }) {
     setSuccesMessageUpdate,
     succesMessageRaporUpdate,
     setSuccesMessageRaporUpdate,
+    activeEditId,
+    setActiveEditId,
+    activeRaporId, 
+    setActiveRaporId
   };
 
   return (

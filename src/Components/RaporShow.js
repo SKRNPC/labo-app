@@ -4,16 +4,35 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 
 function RaporShow({ input }) {
-  const { deleteRaporById, editRaporById,setRaporUpdated } = useContext(FormsContext);
+  const {
+    setRaporUpdated, // Rapor güncellendiğini ayarlayan fonksiyon
+    deleteRaporById, // Raporu silen fonksiyon
+    editRaporById, // Raporu güncelleyen fonksiyon
+    activeRaporId, // Aktif rapor ID'si
+    setActiveRaporId, // Aktif rapor ID'sini ayarlayan fonksiyon
+  } = useContext(FormsContext);
+
   const [showEdit, setShowEdit] = useState(false);
-  const handleDeleteClick = () => {
-    deleteRaporById(input.id);
-    setShowEdit(!showEdit);
-  };
+
   const handleEditClick = () => {
-    setRaporUpdated(true)
-    setShowEdit(!showEdit);
+    setRaporUpdated(true);
+    if (activeRaporId && activeRaporId !== input.id) {
+      setActiveRaporId(input.id);
+      setShowEdit(true); // Bu rapor için düzenlemeyi aç
+    } else if (activeRaporId === input.id) {
+      setShowEdit(!showEdit); // Eğer bu rapor zaten aktifse, showEdit'i toggle edin
+    } else {
+      setActiveRaporId(input.id); // Bu raporı aktif düzenleme olarak ayarla
+      setShowEdit(true); // Ve showEdit'i true yaparak formu açın
+    }
   };
+
+  const handleDeleteClick = () => {
+    deleteRaporById(input.id); // Silme fonksiyonu
+    setShowEdit(!showEdit); // Düzenlemeyi kapat
+  };
+
+
   const handleSubmit = (
     id,
     updatedSelectedLaborant,
@@ -43,7 +62,7 @@ function RaporShow({ input }) {
 
   return (
     <div className="hasta-show">
-      {showEdit ? (
+       {activeRaporId === input.id && showEdit? (
         <RaporForm
           input={input}
           raporFormUpdate={true}
