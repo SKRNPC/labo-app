@@ -15,7 +15,6 @@ function LaborantForm({
     setErrors,
     errors,
     succesMessage,
-    setSuccesMessage,
     setGeneralError,
     generalError,
     apiProgress,
@@ -50,9 +49,9 @@ function LaborantForm({
   };
   const clearMessages = () => {
     // Bu fonksiyon succesMessage ve generalError state'lerini sıfırlar
-    setSuccesMessage(""); // succesMessage'ı sıfırlayın
+    setSuccesMessageUpdate(""); // succesMessage'ı sıfırlayın
     setGeneralError("");
-    onClose(); // generalError'u sıfırlayın
+    onClose();
   };
 
   const handleSubmit = async (event) => {

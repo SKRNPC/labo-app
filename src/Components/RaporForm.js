@@ -1,12 +1,13 @@
-import {useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
 import Input from "./Input";
 import Modal from "./ImageModal";
+import RaporGuncelle from "./Api/RaporGuncelleApi";
 
-function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
+function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
   const {
     laborants,
     succesMessageRapor,
@@ -18,30 +19,38 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
     errorsRaporUpdate,
     setErrorsRaporUpdate,
     succesMessageRaporUpdate,
-    setSuccesMessageRaporUpdate
+    setSuccesMessageRaporUpdate,
+    // setRaporlar
   } = useContext(FormsContext);
 
-  const [formState, setFormState] = useState({
-    dosyaNo: input ? input.dosyaNo : "",
-    hastaIsim: input ? input.hastaIsim : "",
-    hastaKimlik: input ? input.hastaKimlik : "",
-    hastaTani: input ? input.hastaTani : "",
-    taniDetay: input ? input.taniDetay : "",
-    selectedDate: input ? new Date(input.selectedDate) : null,
-    selectedFile: input ? input.selectedFile : "",
-    selectedLaborant: input ? input.selectedLaborant : "",
-  });
+  const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
+  const [hastaIsim, setHastaIsim] = useState(input ? input.hastaIsim : "");
+  const [hastaKimlik, setHastaKimlik] = useState(
+    input ? input.hastaKimlik : ""
+  );
+  const [hastaTani, setHastaTani] = useState(input ? input.hastaTani : "");
+  const [taniDetay, setTaniDetay] = useState(input ? input.taniDetay : "");
+  const [selectedDate, setSelectedDate] = useState(
+    input ? new Date(input.selectedDate) : null
+  );
+  const [selectedFile, setSelectedFile] = useState(
+    input ? input.selectedFile : ""
+  );
+  const [selectedLaborant, setSelectedLaborant] = useState(
+    input ? input.selectedLaborant : ""
+  );
+
 
   const handleInputChange = (field, value) => {
-    let maxChar ;
-  
+    let maxChar;
+
     // Determine the maximum character limit for the current field
     if (field === "dosyaNo") {
       maxChar = 5;
     } else if (field === "hastaKimlik") {
       maxChar = 11;
     }
-  
+
     // Check for specific input validations
     if (value.length > maxChar) {
       // Handle error for exceeding length
@@ -58,27 +67,43 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
       }
       return; // Prevent further processing
     }
-  
-    setFormState((prevState) => ({
-      ...prevState,
-      [field]: value,
-    }));
-  
+
     // Clear related error on input change
     if (raporFormUpdate) {
       setErrorsRaporUpdate((lastErrors) => ({ ...lastErrors, [field]: undefined }));
     } else {
       setErrorsRapor((lastErrors) => ({ ...lastErrors, [field]: undefined }));
     }
+
+    // Update the state for the specific field
+    switch (field) {
+      case "dosyaNo":
+        setDosyaNo(value);
+        break;
+      case "hastaIsim":
+        setHastaIsim(value);
+        break;
+      case "hastaKimlik":
+        setHastaKimlik(value);
+        break;
+      case "hastaTani":
+        setHastaTani(value);
+        break;
+      case "taniDetay":
+        setTaniDetay(value);
+        break;
+      default:
+        break;
+    }
   };
-  
 
   const handleLaborantChange = (event) => {
-    handleInputChange("selectedLaborant", event.target.value);
+    const value = event.target.value;
+    setSelectedLaborant(value);
   };
 
   const handleDateChange = (date) => {
-    handleInputChange("selectedDate", date || new Date());
+    setSelectedDate(date || new Date());
   };
 
   const handleFileChange = (event) => {
@@ -88,30 +113,20 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
     const fileReader = new FileReader();
 
     fileReader.onloadend = () => {
-      handleInputChange("selectedFile", fileReader.result);
+      setSelectedFile(fileReader.result);
     };
 
     fileReader.readAsDataURL(file);
   };
-  const handleDeleteClick =  async (event)=> {
+
+  const handleDeleteClick = async (event) => {
     event.preventDefault();
-      onDelete(input.id)
+    onDelete(input.id);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    const {
-      selectedLaborant,
-      dosyaNo,
-      hastaIsim,
-      hastaKimlik,
-      hastaTani,
-      taniDetay,
-      selectedDate,
-      selectedFile,
-    } = formState;
-
+  
     if (raporFormUpdate) {
       onUpdate(
         input.id,
@@ -125,7 +140,6 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
         selectedFile
       );
     } else {
-      
       createRapor(
         selectedLaborant,
         dosyaNo,
@@ -136,16 +150,16 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
         selectedDate,
         selectedFile
       );
-      setFormState({
-        dosyaNo: "",
-        hastaIsim: "",
-        hastaKimlik: "",
-        hastaTani: "",
-        taniDetay: "",
-        selectedDate: null,
-        selectedFile: "",
-        selectedLaborant: "",
-      });
+  
+      // Reset form fields after submission
+      setDosyaNo("");
+      setHastaIsim("");
+      setHastaKimlik("");
+      setHastaTani("");
+      setTaniDetay("");
+      setSelectedDate(null);
+      setSelectedFile("");
+      setSelectedLaborant("");
     }
   };
 
@@ -160,10 +174,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
   const clearMessages = () => {
-    // Bu fonksiyon succesMessage ve generalError state'lerini sıfırlar
-    setSuccesMessageRaporUpdate(""); // succesMessage'ı sıfırlayın
-    onClose(); // generalError'u sıfırlayın
+    setSuccesMessageRaporUpdate("");
+    onClose();
   };
 
   return (
@@ -172,12 +186,12 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
         <div className="rapor-update">
           <h1 className="title-labo">Raporu Güncelle</h1>
           <span className="close-icon-rapor" onClick={clearMessages}>
-              x
-            </span>
+            x
+          </span>
           <form className="labForm">
             <label className="labo-label">Laborant Seç:</label>
             <select
-              value={formState.selectedLaborant}
+              value={selectedLaborant}
               onChange={handleLaborantChange}
               className="labo-input"
             >
@@ -191,28 +205,28 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
               ))}
             </select>
             <Input
-              ad={formState.dosyaNo}
+              ad={dosyaNo}
               label="Dosya Numarası"
               error={errorsRaporUpdate.dosyaNo}
               onChange={(e) => handleInputChange("dosyaNo", e.target.value)}
               turu="number"
             />
             <Input
-              ad={formState.hastaIsim}
+              ad={hastaIsim}
               label="Ad Soyad"
               error={errorsRaporUpdate.hastaIsim}
               onChange={(e) => handleInputChange("hastaIsim", e.target.value)}
               turu="text"
             />
             <Input
-              ad={formState.hastaKimlik}
+              ad={hastaKimlik}
               label="Hasta Kimlik No"
               error={errorsRaporUpdate.hastaKimlik}
               onChange={(e) => handleInputChange("hastaKimlik", e.target.value)}
               turu="number"
             />
             <Input
-              ad={formState.hastaTani}
+              ad={hastaTani}
               label="Koyulan Tanı Başlığı"
               error={errorsRaporUpdate.hastaTani}
               onChange={(e) => handleInputChange("hastaTani", e.target.value)}
@@ -220,7 +234,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
             />
             <label className="labo-label">Tanı Detayları</label>
             <textarea
-              value={formState.taniDetay}
+              value={taniDetay}
               onChange={(e) => handleInputChange("taniDetay", e.target.value)}
               cols="30"
               rows="5"
@@ -228,7 +242,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
             ></textarea>
             <label className="labo-label">Rapor Tarihi</label>
             <DatePicker
-              selected={formState.selectedDate}
+              selected={selectedDate}
               onChange={handleDateChange}
               dateFormat="dd/MM/yyyy"
               className="labo-input"
@@ -241,20 +255,18 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
               accept=".jpg, .jpeg, .png"
               className="labo-input"
             />
-            {formState.selectedFile && (
+            {selectedFile && (
               <div>
                 <img
-                  src={formState.selectedFile}
+                  src={selectedFile}
                   alt="Selected File"
                   className="input-file"
                   style={{ maxWidth: "100%", maxHeight: "100%" }}
                 />
               </div>
-              
             )}
-            
             <footer>
-            {succesMessageRaporUpdate && (
+              {succesMessageRaporUpdate && (
                 <div className="alert">
                   <strong>{succesMessageRaporUpdate}</strong>
                 </div>
@@ -264,15 +276,12 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
                   <strong>{generalErrorRapor}</strong>
                 </div>
               )}
-              <button
-                className="labo-button update-button"
-                onClick={handleSubmit}
-              >
+              <button className="labo-button update-button" onClick={handleSubmit}>
                 Güncelle
               </button>
               <button className="button-sil" onClick={handleDeleteClick}>
-              Sil
-            </button>
+                Sil
+              </button>
             </footer>
           </form>
         </div>
@@ -282,7 +291,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
           <form className="labForm">
             <label className="labo-label">Laborant Seç:</label>
             <select
-              value={formState.selectedLaborant}
+              value={selectedLaborant}
               onChange={handleLaborantChange}
               className="labo-input"
             >
@@ -297,28 +306,28 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
             </select>
             <div className="hata-mesaj">{errorsRapor.selectedLaborant}</div>
             <Input
-              ad={formState.dosyaNo}
+              ad={dosyaNo}
               label="Dosya Numarası"
               error={errorsRapor.dosyaNo}
               onChange={(e) => handleInputChange("dosyaNo", e.target.value)}
               turu="number"
             />
             <Input
-              ad={formState.hastaIsim}
+              ad={hastaIsim}
               label="Ad Soyad"
               error={errorsRapor.hastaIsim}
               onChange={(e) => handleInputChange("hastaIsim", e.target.value)}
               turu="text"
             />
             <Input
-              ad={formState.hastaKimlik}
+              ad={hastaKimlik}
               label="Hasta Kimlik No"
               error={errorsRapor.hastaKimlik}
               onChange={(e) => handleInputChange("hastaKimlik", e.target.value)}
               turu="number"
             />
             <Input
-              ad={formState.hastaTani}
+              ad={hastaTani}
               label="Koyulan Tanı Başlığı"
               error={errorsRapor.hastaTani}
               onChange={(e) => handleInputChange("hastaTani", e.target.value)}
@@ -326,7 +335,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
             />
             <label className="labo-label">Tanı Detayları</label>
             <textarea
-              value={formState.taniDetay}
+              value={taniDetay}
               onChange={(e) => handleInputChange("taniDetay", e.target.value)}
               cols="30"
               rows="5"
@@ -334,7 +343,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
             ></textarea>
             <label className="labo-label">Rapor Tarihi</label>
             <DatePicker
-              selected={formState.selectedDate}
+              selected={selectedDate}
               onChange={handleDateChange}
               dateFormat="dd/MM/yyyy"
               className="labo-input"
@@ -351,10 +360,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete,onClose }) {
             {isModalOpen && (
               <Modal image={largeImage} closeModal={closeModal} />
             )}
-            {formState.selectedFile && (
-              <div onClick={() => openModal(formState.selectedFile)}>
+            {selectedFile && (
+              <div onClick={() => openModal(selectedFile)}>
                 <img
-                  src={formState.selectedFile}
+                  src={selectedFile}
                   alt="Selected File"
                   className="input-file"
                   style={{ maxWidth: "100%", maxHeight: "100%" }}
