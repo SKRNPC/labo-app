@@ -1,5 +1,5 @@
 function Input(props) {
-    const {ad, label, error, onChange, turu}=props
+    const {ad, label, error, onChange, turu,disabled}=props
    
   return (
     <>
@@ -9,6 +9,7 @@ function Input(props) {
         onChange={onChange}
         type={turu}
         className="labo-input"
+        disabled={disabled}
       />
       <div className="hata-mesaj">{error}</div>
     </>

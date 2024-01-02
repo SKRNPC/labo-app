@@ -91,6 +91,7 @@ function LaborantForm({
                 error={errorsLaborantUpdate.labKimlik}
                 onChange={handleKimlikChange}
                 turu="number"
+                disabled={true}
               />
               <footer>
                 {succesMessageUpdate && (

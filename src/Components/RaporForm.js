@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext } from "react";
 import FormsContext from "../context/Form";
 import Input from "./Input";
 import Modal from "./ImageModal";
-import RaporGuncelle from "./Api/RaporGuncelleApi";
 
 function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
   const {
@@ -224,6 +223,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
               error={errorsRaporUpdate.hastaKimlik}
               onChange={(e) => handleInputChange("hastaKimlik", e.target.value)}
               turu="number"
+              disabled={true}
             />
             <Input
               ad={hastaTani}
