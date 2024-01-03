@@ -4,26 +4,23 @@ import { useContext } from "react";
 import FormsContext from "../context/Form";
 
 function LaborantShow({ input }) {
-  const {
-    setLaborantUpdated,
-    deleteLaborantById,
-    editInputById,
-  } = useContext(FormsContext);
-
+  const { setLaborantUpdated, deleteLaborantById, editInputById } =
+    useContext(FormsContext);
 
   const [showEdit, setShowEdit] = useState(false);
 
   const handleEditClick = () => {
-    setLaborantUpdated(true)
+    setLaborantUpdated(true);
     setShowEdit(!showEdit);
   };
 
   const handleDeleteClick = () => {
     deleteLaborantById(input.id);
-    setShowEdit(!showEdit);  
+    setShowEdit(false);
   };
   const handleSubmit = (id, updatedIsim, updatedKimlik) => {
     editInputById(id, updatedIsim, updatedKimlik);
+    setShowEdit(false);
   };
   const handleCloseClick = () => {
     setShowEdit(false);
@@ -46,7 +43,7 @@ function LaborantShow({ input }) {
             <h3 className="isim-show">{input.isim}</h3>
             <div>
               <button className="button-guncelle" onClick={handleEditClick}>
-                Güncelle
+                Düzenle
               </button>
             </div>
           </div>

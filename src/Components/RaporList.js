@@ -3,19 +3,24 @@ import { useContext, useEffect } from "react";
 import FormsContext from "../context/Form";
 import loadRapors from "../Components/Api/RaporListApi";
 function RaporList() {
-  const { raporlar, setRaporlar,searchedRapors,raporUpdated } = useContext(FormsContext);
- 
+  const { raporlar, setRaporlar, searchedRapors, raporUpdated } =
+    useContext(FormsContext);
+
   useEffect(() => {
     async function getRapors() {
-      const response = await loadRapors();
-      setRaporlar(response.data);
-      console.log(raporUpdated)
+      try {
+        const response = await loadRapors();
+        console.log(raporUpdated);
+        setRaporlar(response.data);
+      } catch (error) {
+        console.error("Rapor loading failed:", error);
+      }
     }
     getRapors();
-  }, [setRaporlar,raporUpdated]);
+  }, [raporUpdated]);
   return (
     <div className="rapor-list">
-       {searchedRapors.length > 0
+      {searchedRapors.length > 0
         ? searchedRapors.map((input, index) => (
             <RaporShow key={index} input={input} />
           ))

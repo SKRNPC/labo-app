@@ -4,20 +4,28 @@ import FormsContext from "../context/Form";
 import loadLaborants from "../Components/Api/LaborantListApi";
 
 function LaborantList() {
-  const { laborants, setLaborants,searchedLaborants,laborantUpdated} = useContext(FormsContext);
- 
-  
+  const {
+    laborants,
+    setLaborants,
+    searchedLaborants,
+    laborantUpdated,
+    setLaborantUpdated,
+  } = useContext(FormsContext);
+
   useEffect(() => {
     async function getLaborants() {
-      
+      try {
         const response = await loadLaborants();
-        setLaborants(response.data);
         console.log(laborantUpdated);
+        setLaborants(response.data);
+      } catch (error) {
+        console.error("Laborant loading failed:", error);
+      }
     }
     getLaborants();
-  },[setLaborants, laborantUpdated]);
-
- const displayedLaborants = searchedLaborants.length > 0 ? searchedLaborants : laborants.content;
+  }, [setLaborantUpdated]);
+  const displayedLaborants =
+    searchedLaborants.length > 0 ? searchedLaborants : laborants.content;
 
   return (
     <div className="laborant-list">

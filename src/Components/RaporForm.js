@@ -19,7 +19,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
     setErrorsRaporUpdate,
     succesMessageRaporUpdate,
     setSuccesMessageRaporUpdate,
-    setRaporUpdated
+    setRaporUpdated,
   } = useContext(FormsContext);
 
   const [dosyaNo, setDosyaNo] = useState(input ? input.dosyaNo : "");
@@ -38,7 +38,6 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
   const [selectedLaborant, setSelectedLaborant] = useState(
     input ? input.selectedLaborant : ""
   );
-
 
   const handleInputChange = (field, value) => {
     let maxChar;
@@ -69,7 +68,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
 
     // Clear related error on input change
     if (raporFormUpdate) {
-      setErrorsRaporUpdate((lastErrors) => ({ ...lastErrors, [field]: undefined }));
+      setErrorsRaporUpdate((lastErrors) => ({
+        ...lastErrors,
+        [field]: undefined,
+      }));
     } else {
       setErrorsRapor((lastErrors) => ({ ...lastErrors, [field]: undefined }));
     }
@@ -126,9 +128,9 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (raporFormUpdate) {
-      setRaporUpdated(false)
+      setRaporUpdated(false);
       onUpdate(
         input.id,
         selectedLaborant,
@@ -151,7 +153,7 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
         selectedDate,
         selectedFile
       );
-  
+
       // Reset form fields after submission
       setDosyaNo("");
       setHastaIsim("");
@@ -278,7 +280,10 @@ function RaporForm({ input, raporFormUpdate, onUpdate, onDelete, onClose }) {
                   <strong>{generalErrorRapor}</strong>
                 </div>
               )}
-              <button className="labo-button update-button" onClick={handleSubmit}>
+              <button
+                className="labo-button update-button"
+                onClick={handleSubmit}
+              >
                 Güncelle
               </button>
               <button className="button-sil" onClick={handleDeleteClick}>

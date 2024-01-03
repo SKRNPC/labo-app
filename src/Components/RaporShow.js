@@ -22,7 +22,6 @@ function RaporShow({ input }) {
     setShowEdit(!showEdit); // Düzenlemeyi kapat
   };
 
-
   const handleSubmit = (
     id,
     updatedSelectedLaborant,
@@ -52,7 +51,7 @@ function RaporShow({ input }) {
 
   return (
     <div className="hasta-show">
-       {showEdit? (
+      {showEdit ? (
         <RaporForm
           input={input}
           raporFormUpdate={true}
@@ -71,7 +70,7 @@ function RaporShow({ input }) {
           </p>
           <div>
             <button className="button-guncelle" onClick={handleEditClick}>
-              Güncelle
+              Düzenle
             </button>
           </div>
         </div>
