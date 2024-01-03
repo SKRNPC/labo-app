@@ -16,11 +16,10 @@ function LaborantShow({ input }) {
 
   const handleDeleteClick = () => {
     deleteLaborantById(input.id);
-    setShowEdit(false);
+    setShowEdit(!showEdit);
   };
   const handleSubmit = (id, updatedIsim, updatedKimlik) => {
     editInputById(id, updatedIsim, updatedKimlik);
-    setShowEdit(false);
   };
   const handleCloseClick = () => {
     setShowEdit(false);
@@ -29,7 +28,6 @@ function LaborantShow({ input }) {
   return (
     <div>
       {showEdit ? (
-        // Eğer aktif edit ID bu laborant ise ve showEdit true ise formu göster
         <LaborantForm
           input={input}
           laborantFormUpdate={true}

@@ -4,13 +4,8 @@ import FormsContext from "../context/Form";
 import loadLaborants from "../Components/Api/LaborantListApi";
 
 function LaborantList() {
-  const {
-    laborants,
-    setLaborants,
-    searchedLaborants,
-    laborantUpdated,
-    setLaborantUpdated,
-  } = useContext(FormsContext);
+  const { laborants, setLaborants, searchedLaborants, laborantUpdated } =
+    useContext(FormsContext);
 
   useEffect(() => {
     async function getLaborants() {
@@ -23,7 +18,7 @@ function LaborantList() {
       }
     }
     getLaborants();
-  }, [setLaborantUpdated]);
+  }, [laborantUpdated]);
   const displayedLaborants =
     searchedLaborants.length > 0 ? searchedLaborants : laborants.content;
 
